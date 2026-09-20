@@ -2376,35 +2376,124 @@
     text-decoration: underline;
   }
   
-  /* =========================================================
-     AVAILABILITY RESPONSIVE
-     ========================================================= */
-  
-  @media (max-width: 680px) {
-  
-    .availability-summary {
-      grid-template-columns: 1fr;
+/* =========================================================
+   AVAILABILITY RESPONSIVE
+   ========================================================= */
+
+   @media (max-width: 680px) {
+
+    /* Prevent the availability section itself from causing
+       horizontal page scrolling */
+    .availability-section,
+    .availability-container,
+    .availability-card,
+    .availability-wrapper {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
     }
   
+    /* Summary */
+    .availability-summary {
+      grid-template-columns: 1fr;
+      width: 100%;
+      min-width: 0;
+    }
+  
+    .availability-summary > div {
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  
+    /* Toolbar */
     .availability-toolbar {
+      width: 100%;
+      min-width: 0;
       flex-direction: column;
       align-items: stretch;
+      gap: 10px;
     }
   
     .availability-toolbar label {
+      width: 100%;
       min-width: 0;
+      box-sizing: border-box;
+    }
+  
+    .availability-toolbar input,
+    .availability-toolbar select {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
   
     .availability-copy-btn {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  
+    /* Individual day */
+    .availability-day {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      overflow: hidden;
     }
   
     .availability-day-header {
+      width: 100%;
+      min-width: 0;
       min-height: 62px;
+      padding: 10px 12px;
+      box-sizing: border-box;
+      gap: 8px;
+    }
+  
+    .availability-day-name {
+      min-width: 0;
+      flex: 1;
+    }
+  
+    .availability-day-name strong {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  
+    .availability-day-name > span {
+      flex-shrink: 0;
+    }
+  
+    /* Day content */
+    .day-slots,
+    .day-unavailable {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+  
+    /* Slot */
+    .availability-slot {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      align-items: flex-start;
+      gap: 8px;
     }
   
     .availability-time-input {
-      grid-template-columns: 1fr;
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      grid-template-columns: minmax(0, 1fr);
       gap: 6px;
     }
   
@@ -2412,59 +2501,131 @@
       display: none;
     }
   
-    .availability-slot {
-      align-items: flex-start;
-    }
-  
     .availability-time-input input {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
       height: 44px;
+      box-sizing: border-box;
     }
   
     .remove-slot-btn {
+      flex-shrink: 0;
       margin-top: 5px;
     }
   
+    /* Add slot button */
+    .add-slot-btn {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  
+    /* Save area */
     .availability-save-row {
+      width: 100%;
+      min-width: 0;
       flex-direction: column;
       align-items: stretch;
+      gap: 12px;
     }
   
     .availability-success {
+      width: 100%;
       justify-content: center;
+      text-align: center;
+      min-width: 0;
     }
   
     .save-availability-btn {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
   }
   
+  
+  /* =========================================================
+     VERY SMALL PHONES
+     ========================================================= */
+  
   @media (max-width: 420px) {
+  
+    .availability-section {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  
+    .availability-summary {
+      gap: 10px;
+    }
   
     .availability-summary > div {
       padding: 12px;
     }
   
     .availability-day-header {
-      padding: 10px 12px;
+      padding: 10px;
     }
   
-    .day-slots {
-      padding-left: 12px;
-      padding-right: 12px;
-    }
-  
+    .day-slots,
     .day-unavailable {
-      padding-left: 12px;
-      padding-right: 12px;
+      padding: 10px;
+    }
+  
+    .availability-day-name {
+      gap: 8px;
     }
   
     .availability-day-name > span {
       width: 35px;
       height: 35px;
+      min-width: 35px;
+      flex-shrink: 0;
     }
   
     .availability-day-name strong {
       font-size: 12px;
+    }
+  
+    .availability-slot {
+      gap: 6px;
+    }
+  
+    .availability-time-input input {
+      height: 42px;
+      font-size: 13px;
+    }
+  
+    .remove-slot-btn {
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+    }
+  }
+  
+  
+  /* =========================================================
+     EMERGENCY HORIZONTAL OVERFLOW PROTECTION
+     ========================================================= */
+  
+  @media (max-width: 680px) {
+  
+    .availability-section *,
+    .availability-section *::before,
+    .availability-section *::after {
+      box-sizing: border-box;
+    }
+  
+    .availability-section img,
+    .availability-section svg {
+      max-width: 100%;
+    }
+  
+    .availability-section button,
+    .availability-section input,
+    .availability-section select,
+    .availability-section textarea {
+      max-width: 100%;
     }
   }
 

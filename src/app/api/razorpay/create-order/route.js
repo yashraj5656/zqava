@@ -555,7 +555,7 @@ export async function POST(request) {
     const subtotal =
       hourlyRate * bookingDuration;
 
-    const serviceFee = 0;
+      const serviceFee = Math.round(subtotal * 10 / 100);
 
     const total =
       subtotal + serviceFee;
@@ -605,18 +605,22 @@ export async function POST(request) {
         },
       });
 
-    return NextResponse.json({
-      success: true,
-
-      order: {
-        id: order.id,
-        amount: order.amount,
-        currency: order.currency,
-      },
-
-      amount: total,
-      hourlyRate,
-    });
+      return NextResponse.json({
+        success: true,
+      
+        order: {
+          id: order.id,
+          amount: order.amount,
+          currency: order.currency,
+        },
+      
+        amount: total,
+        subtotal,
+        serviceFee,
+        total,
+        hourlyRate,
+        duration: bookingDuration,
+      });
   } catch (error) {
     console.error(
       "CREATE RAZORPAY ORDER ERROR:",
