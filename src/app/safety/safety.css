@@ -1,0 +1,1099 @@
+/* =========================================================
+   ZQAVA SAFETY PAGE
+   ========================================================= */
+
+   .safety-page {
+    --safety-purple: #7444ff;
+    --safety-purple-dark: #5b2fe0;
+    --safety-purple-light: #f2efff;
+    --safety-black: #111111;
+    --safety-text: #252525;
+    --safety-muted: #707070;
+    --safety-border: #e8e8e8;
+    --safety-bg: #ffffff;
+    --safety-soft: #f7f7f8;
+  
+    width: 100%;
+    overflow: hidden;
+    background: var(--safety-bg);
+    color: var(--safety-text);
+  }
+  
+  .safety-container {
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+  
+  
+  /* =========================================================
+     BUTTONS
+     ========================================================= */
+  
+  .safety-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      transform 0.25s ease,
+      background 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  
+  .safety-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  .safety-btn-primary {
+    color: #ffffff;
+    background: var(--safety-purple);
+    box-shadow: 0 12px 30px rgba(116, 68, 255, 0.18);
+  }
+  
+  .safety-btn-primary:hover {
+    background: var(--safety-purple-dark);
+    box-shadow: 0 16px 36px rgba(116, 68, 255, 0.25);
+  }
+  
+  .safety-btn-secondary {
+    color: var(--safety-black);
+    background: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+  }
+  
+  .safety-btn-secondary:hover {
+    background: #f5f5f5;
+  }
+  
+  .safety-btn-dark {
+    color: #ffffff;
+    background: var(--safety-black);
+  }
+  
+  .safety-btn-dark:hover {
+    background: #2b2b2b;
+  }
+  
+  .safety-btn-outline {
+    color: var(--safety-black);
+    background: transparent;
+    border: 1px solid #d6d6d6;
+  }
+  
+  .safety-btn-outline:hover {
+    border-color: var(--safety-purple);
+    color: var(--safety-purple);
+  }
+  
+  
+  /* =========================================================
+     HERO
+     ========================================================= */
+  
+  .safety-hero {
+    position: relative;
+    padding: 110px 0 100px;
+    color: #ffffff;
+    background:
+      radial-gradient(
+        circle at 78% 35%,
+        rgba(146, 111, 255, 0.38),
+        transparent 28%
+      ),
+      radial-gradient(
+        circle at 15% 80%,
+        rgba(116, 68, 255, 0.25),
+        transparent 30%
+      ),
+      #101010;
+  }
+  
+  .safety-hero::after {
+    content: "";
+    position: absolute;
+    right: -150px;
+    bottom: -220px;
+    width: 500px;
+    height: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  
+  .safety-hero-inner {
+    position: relative;
+    z-index: 2;
+  
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+  
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(330px, 0.8fr);
+    gap: 80px;
+    align-items: center;
+  }
+  
+  .safety-hero-copy {
+    max-width: 700px;
+  }
+  
+  .safety-eyebrow,
+  .safety-hero-copy > .safety-eyebrow {
+    display: inline-block;
+    margin-bottom: 24px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: #b8a7ff;
+  }
+  
+  .safety-hero h1 {
+    margin: 0;
+    max-width: 720px;
+  
+    font-size: clamp(54px, 7vw, 92px);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+    font-weight: 800;
+  }
+  
+  .safety-hero h1 span {
+    display: block;
+    color: #a58cff;
+  }
+  
+  .safety-hero-copy > p {
+    max-width: 620px;
+    margin: 30px 0 0;
+  
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 18px;
+    line-height: 1.75;
+  }
+  
+  .safety-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 36px;
+  }
+  
+  
+  /* =========================================================
+     HERO SHIELD CARD
+     ========================================================= */
+  
+  .safety-shield-card {
+    position: relative;
+    min-height: 420px;
+    padding: 42px;
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 32px;
+    overflow: hidden;
+  
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.025)
+      );
+  
+    backdrop-filter: blur(15px);
+  }
+  
+  .safety-shield-glow {
+    position: absolute;
+    top: 55px;
+    left: 50%;
+    width: 180px;
+    height: 180px;
+  
+    transform: translateX(-50%);
+  
+    border-radius: 50%;
+    background: rgba(116, 68, 255, 0.3);
+    filter: blur(40px);
+  }
+  
+  .safety-shield-icon {
+    position: absolute;
+    top: 62px;
+    left: 50%;
+  
+    width: 125px;
+    height: 145px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    transform: translateX(-50%);
+  
+    color: #ffffff;
+  }
+  
+  .safety-shield-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .safety-shield-card > span {
+    position: relative;
+    z-index: 2;
+  
+    margin-bottom: 10px;
+  
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    color: #aa96ff;
+  }
+  
+  .safety-shield-card > strong {
+    position: relative;
+    z-index: 2;
+  
+    font-size: 29px;
+    letter-spacing: -0.03em;
+  }
+  
+  .safety-shield-card > p {
+    position: relative;
+    z-index: 2;
+  
+    margin: 12px 0 0;
+  
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     SECTION HEADING
+     ========================================================= */
+  
+  .safety-section-heading {
+    max-width: 680px;
+  }
+  
+  .safety-section-heading > span,
+  .safety-label,
+  .safety-scam-header > span,
+  .safety-emergency-content > span,
+  .safety-guidelines-inner > div > span,
+  .safety-final-cta > span {
+    display: block;
+  
+    margin-bottom: 16px;
+  
+    color: var(--safety-purple);
+  
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+  }
+  
+  .safety-section-heading h2,
+  .safety-checklist-intro h2,
+  .safety-scam-header h2 {
+    margin: 0;
+  
+    color: var(--safety-black);
+  
+    font-size: clamp(38px, 5vw, 62px);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+  
+  .safety-section-heading p,
+  .safety-checklist-intro > p,
+  .safety-scam-header > p {
+    margin: 22px 0 0;
+  
+    color: var(--safety-muted);
+  
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  
+  .safety-section-heading.centered {
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  
+  /* =========================================================
+     PRINCIPLES
+     ========================================================= */
+  
+  .safety-principles {
+    padding: 120px 0;
+  }
+  
+  .safety-principles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  
+    margin-top: 65px;
+  }
+  
+  .safety-principle-card {
+    position: relative;
+  
+    min-height: 330px;
+    padding: 34px;
+  
+    border: 1px solid var(--safety-border);
+    border-radius: 26px;
+  
+    background: #ffffff;
+  
+    transition:
+      transform 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  
+  .safety-principle-card:hover {
+    transform: translateY(-5px);
+    border-color: #d6ceff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06);
+  }
+  
+  .safety-number {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  
+    color: #d4d4d4;
+  
+    font-size: 12px;
+    font-weight: 800;
+  }
+  
+  .safety-card-icon {
+    width: 48px;
+    height: 48px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin-bottom: 60px;
+  
+    border-radius: 14px;
+  
+    color: var(--safety-purple);
+    background: var(--safety-purple-light);
+  
+    font-size: 20px;
+    font-weight: 800;
+  }
+  
+  .safety-principle-card h3 {
+    margin: 0 0 12px;
+  
+    color: var(--safety-black);
+  
+    font-size: 22px;
+    letter-spacing: -0.03em;
+  }
+  
+  .safety-principle-card p {
+    margin: 0;
+  
+    color: var(--safety-muted);
+  
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     BEFORE MEETING
+     ========================================================= */
+  
+  .safety-checklist-section {
+    padding: 110px 0;
+  
+    background: var(--safety-soft);
+  }
+  
+  .safety-checklist-layout {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 100px;
+    align-items: start;
+  }
+  
+  .safety-checklist-intro {
+    position: sticky;
+    top: 120px;
+  }
+  
+  .safety-checklist {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .safety-check-item {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 18px;
+  
+    padding: 25px 0;
+  
+    border-bottom: 1px solid #dddddf;
+  }
+  
+  .safety-check-item:first-child {
+    padding-top: 0;
+  }
+  
+  .safety-check-item:last-child {
+    border-bottom: none;
+  }
+  
+  .safety-check {
+    width: 34px;
+    height: 34px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin-top: 2px;
+  
+    border-radius: 50%;
+  
+    color: #ffffff;
+    background: var(--safety-purple);
+  
+    font-size: 13px;
+    font-weight: 800;
+  }
+  
+  .safety-check-item h3 {
+    margin: 0 0 6px;
+  
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--safety-black);
+  }
+  
+  .safety-check-item p {
+    margin: 0;
+  
+    color: var(--safety-muted);
+  
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  
+  
+  /* =========================================================
+     DURING BOOKING
+     ========================================================= */
+  
+  .safety-during {
+    padding: 120px 0;
+  }
+  
+  .safety-boundary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  
+    margin-top: 65px;
+  }
+  
+  .safety-boundary-card {
+    padding: 30px;
+  
+    border-radius: 24px;
+  
+    background: #111111;
+    color: #ffffff;
+  }
+  
+  .safety-boundary-card > span {
+    display: block;
+  
+    margin-bottom: 70px;
+  
+    color: #9e87ff;
+  
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+  }
+  
+  .safety-boundary-card h3 {
+    margin: 0 0 12px;
+  
+    font-size: 20px;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+  
+  .safety-boundary-card p {
+    margin: 0;
+  
+    color: rgba(255, 255, 255, 0.58);
+  
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     SCAMS
+     ========================================================= */
+  
+  .safety-scams {
+    padding: 120px 0;
+  
+    background: var(--safety-purple-light);
+  }
+  
+  .safety-scam-header {
+    max-width: 700px;
+  }
+  
+  .safety-scam-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  
+    margin-top: 60px;
+  }
+  
+  .safety-scam-card {
+    padding: 32px;
+  
+    border: 1px solid rgba(116, 68, 255, 0.12);
+    border-radius: 24px;
+  
+    background: #ffffff;
+  }
+  
+  .safety-warning-icon {
+    width: 42px;
+    height: 42px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin-bottom: 55px;
+  
+    border-radius: 12px;
+  
+    color: var(--safety-purple);
+    background: var(--safety-purple-light);
+  
+    font-weight: 900;
+  }
+  
+  .safety-scam-card h3 {
+    margin: 0 0 12px;
+  
+    color: var(--safety-black);
+  
+    font-size: 20px;
+    letter-spacing: -0.025em;
+  }
+  
+  .safety-scam-card p {
+    margin: 0;
+  
+    color: var(--safety-muted);
+  
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     REPORT
+     ========================================================= */
+  
+  .safety-report {
+    padding: 100px 0;
+  }
+  
+  .safety-report-box {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 35px;
+    align-items: start;
+  
+    padding: 55px;
+  
+    border-radius: 32px;
+  
+    background: #f4f4f5;
+  }
+  
+  .safety-report-icon {
+    width: 72px;
+    height: 72px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    border-radius: 22px;
+  
+    color: var(--safety-purple);
+    background: #ffffff;
+  }
+  
+  .safety-report-icon svg {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .safety-report-content > span {
+    display: block;
+  
+    margin-bottom: 12px;
+  
+    color: var(--safety-purple);
+  
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+  }
+  
+  .safety-report-content h2 {
+    margin: 0;
+  
+    color: var(--safety-black);
+  
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+  
+  .safety-report-content p {
+    max-width: 650px;
+  
+    margin: 18px 0 25px;
+  
+    color: var(--safety-muted);
+  
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     EMERGENCY
+     ========================================================= */
+  
+  .safety-emergency {
+    padding: 110px 0;
+  
+    background: #111111;
+    color: #ffffff;
+  }
+  
+  .safety-emergency-content {
+    max-width: 800px;
+  }
+  
+  .safety-emergency-content > span {
+    color: #a894ff;
+  }
+  
+  .safety-emergency-content h2 {
+    margin: 0;
+  
+    font-size: clamp(42px, 5vw, 70px);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+  }
+  
+  .safety-emergency-content p {
+    max-width: 680px;
+  
+    margin: 28px 0 0;
+  
+    color: rgba(255, 255, 255, 0.62);
+  
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  
+  
+  /* =========================================================
+     GUIDELINES
+     ========================================================= */
+  
+  .safety-guidelines {
+    padding: 80px 0;
+  }
+  
+  .safety-guidelines-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+  
+    padding: 50px;
+  
+    border: 1px solid var(--safety-border);
+    border-radius: 28px;
+  }
+  
+  .safety-guidelines-inner > div {
+    max-width: 650px;
+  }
+  
+  .safety-guidelines-inner h2 {
+    margin: 0;
+  
+    font-size: 40px;
+    letter-spacing: -0.045em;
+  }
+  
+  .safety-guidelines-inner p {
+    margin: 12px 0 0;
+  
+    color: var(--safety-muted);
+  
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     FINAL CTA
+     ========================================================= */
+  
+  .safety-final-cta {
+    padding: 130px 0;
+  
+    text-align: center;
+  
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(116, 68, 255, 0.12),
+        transparent 40%
+      ),
+      #ffffff;
+  }
+  
+  .safety-final-cta > span {
+    color: var(--safety-purple);
+  }
+  
+  .safety-final-cta h2 {
+    margin: 0;
+  
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+  
+  .safety-final-cta p {
+    max-width: 550px;
+  
+    margin: 24px auto 0;
+  
+    color: var(--safety-muted);
+  
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  
+  .safety-final-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  
+    margin-top: 32px;
+  }
+  
+  
+  /* =========================================================
+     RESPONSIVE — TABLET
+     ========================================================= */
+  
+  @media (max-width: 1000px) {
+  
+    .safety-hero-inner {
+      grid-template-columns: 1fr;
+      gap: 55px;
+    }
+  
+    .safety-hero-copy {
+      max-width: 800px;
+    }
+  
+    .safety-shield-card {
+      min-height: 350px;
+      max-width: 600px;
+    }
+  
+    .safety-principles-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .safety-principle-card {
+      min-height: auto;
+    }
+  
+    .safety-card-icon {
+      margin-bottom: 45px;
+    }
+  
+    .safety-checklist-layout {
+      grid-template-columns: 1fr;
+      gap: 55px;
+    }
+  
+    .safety-checklist-intro {
+      position: static;
+    }
+  
+    .safety-boundary-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .safety-scam-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .safety-scam-card {
+      min-height: 230px;
+    }
+  
+  }
+  
+  
+  /* =========================================================
+     RESPONSIVE — MOBILE
+     ========================================================= */
+  
+  @media (max-width: 700px) {
+  
+    .safety-container,
+    .safety-hero-inner {
+      width: min(100% - 32px, 1180px);
+    }
+  
+    .safety-hero {
+      padding: 75px 0 70px;
+    }
+  
+    .safety-hero h1 {
+      font-size: clamp(48px, 15vw, 70px);
+    }
+  
+    .safety-hero-copy > p {
+      font-size: 16px;
+      line-height: 1.65;
+    }
+  
+    .safety-hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .safety-hero-actions .safety-btn {
+      width: 100%;
+    }
+  
+    .safety-shield-card {
+      min-height: 330px;
+      padding: 28px;
+      border-radius: 24px;
+    }
+  
+    .safety-principles,
+    .safety-during,
+    .safety-scams {
+      padding: 80px 0;
+    }
+  
+    .safety-checklist-section {
+      padding: 80px 0;
+    }
+  
+    .safety-section-heading h2,
+    .safety-checklist-intro h2,
+    .safety-scam-header h2 {
+      font-size: 42px;
+    }
+  
+    .safety-principles-grid {
+      margin-top: 40px;
+    }
+  
+    .safety-principle-card {
+      padding: 28px;
+      border-radius: 22px;
+    }
+  
+    .safety-boundary-grid {
+      grid-template-columns: 1fr;
+      margin-top: 40px;
+    }
+  
+    .safety-boundary-card {
+      min-height: 230px;
+    }
+  
+    .safety-scam-grid {
+      margin-top: 40px;
+    }
+  
+    .safety-report {
+      padding: 70px 0;
+    }
+  
+    .safety-report-box {
+      grid-template-columns: 1fr;
+      gap: 25px;
+  
+      padding: 30px;
+      border-radius: 24px;
+    }
+  
+    .safety-report-content h2 {
+      font-size: 42px;
+    }
+  
+    .safety-emergency {
+      padding: 80px 0;
+    }
+  
+    .safety-emergency-content h2 {
+      font-size: 46px;
+    }
+  
+    .safety-guidelines {
+      padding: 55px 0;
+    }
+  
+    .safety-guidelines-inner {
+      flex-direction: column;
+      align-items: flex-start;
+  
+      padding: 30px;
+      border-radius: 24px;
+    }
+  
+    .safety-guidelines-inner h2 {
+      font-size: 36px;
+    }
+  
+    .safety-guidelines-inner .safety-btn {
+      width: 100%;
+    }
+  
+    .safety-final-cta {
+      padding: 90px 0;
+    }
+  
+    .safety-final-cta h2 {
+      font-size: 48px;
+    }
+  
+    .safety-final-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .safety-final-actions .safety-btn {
+      width: 100%;
+    }
+  
+  }
+  
+  
+  /* =========================================================
+     SMALL MOBILE
+     ========================================================= */
+  
+  @media (max-width: 420px) {
+  
+    .safety-container,
+    .safety-hero-inner {
+      width: calc(100% - 28px);
+    }
+  
+    .safety-hero h1 {
+      font-size: 46px;
+    }
+  
+    .safety-section-heading h2,
+    .safety-checklist-intro h2,
+    .safety-scam-header h2 {
+      font-size: 37px;
+    }
+  
+    .safety-shield-card {
+      min-height: 300px;
+    }
+  
+    .safety-check-item {
+      grid-template-columns: 35px 1fr;
+      gap: 12px;
+    }
+  
+    .safety-check {
+      width: 30px;
+      height: 30px;
+    }
+  
+    .safety-emergency-content h2 {
+      font-size: 40px;
+    }
+  
+    .safety-final-cta h2 {
+      font-size: 42px;
+    }
+  
+  }
+  
+  
+  /* =========================================================
+     ACCESSIBILITY
+     ========================================================= */
+  
+  .safety-btn:focus-visible,
+  .safety-page a:focus-visible {
+    outline: 3px solid rgba(116, 68, 255, 0.35);
+    outline-offset: 4px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .safety-btn,
+    .safety-principle-card {
+      transition: none;
+    }
+  
+    .safety-btn:hover,
+    .safety-principle-card:hover {
+      transform: none;
+    }
+  }

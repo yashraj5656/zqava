@@ -1,0 +1,1381 @@
+/* =========================================================
+   ZQAVA — EARN PAGE
+   ========================================================= */
+
+   .earn-page {
+    --earn-purple: #7444ff;
+    --earn-purple-dark: #5c30dc;
+    --earn-purple-light: #f2efff;
+    --earn-black: #111111;
+    --earn-text: #242424;
+    --earn-muted: #707070;
+    --earn-border: #e7e7e7;
+    --earn-soft: #f7f7f8;
+    --earn-white: #ffffff;
+  
+    width: 100%;
+    overflow: hidden;
+  
+    background: var(--earn-white);
+    color: var(--earn-text);
+  }
+  
+  
+  /* =========================================================
+     CONTAINER
+     ========================================================= */
+  
+  .earn-container {
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+  
+  
+  /* =========================================================
+     BUTTONS
+     ========================================================= */
+  
+  .earn-btn {
+    min-height: 52px;
+    padding: 0 25px;
+  
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  
+    border-radius: 999px;
+  
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  
+    transition:
+      transform 0.25s ease,
+      background 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  
+  .earn-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  .earn-btn-primary {
+    color: #ffffff;
+    background: var(--earn-purple);
+  
+    box-shadow: 0 12px 30px rgba(116, 68, 255, 0.18);
+  }
+  
+  .earn-btn-primary:hover {
+    background: var(--earn-purple-dark);
+  
+    box-shadow: 0 16px 35px rgba(116, 68, 255, 0.25);
+  }
+  
+  .earn-btn-secondary {
+    color: #ffffff;
+  
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.07);
+  }
+  
+  .earn-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.13);
+  }
+  
+  .earn-btn-outline {
+    color: var(--earn-black);
+    background: transparent;
+    border: 1px solid #d8d8d8;
+  }
+  
+  .earn-btn-outline:hover {
+    color: var(--earn-purple);
+    border-color: var(--earn-purple);
+  }
+  
+  
+  /* =========================================================
+     HERO
+     ========================================================= */
+  
+  .earn-hero {
+    position: relative;
+  
+    padding: 105px 0 95px;
+  
+    color: #ffffff;
+  
+    background:
+      radial-gradient(
+        circle at 75% 20%,
+        rgba(116, 68, 255, 0.42),
+        transparent 30%
+      ),
+      radial-gradient(
+        circle at 15% 90%,
+        rgba(126, 87, 255, 0.18),
+        transparent 32%
+      ),
+      #101010;
+  }
+  
+  .earn-hero::before {
+    content: "";
+  
+    position: absolute;
+    top: -220px;
+    right: -160px;
+  
+    width: 520px;
+    height: 520px;
+  
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+  
+    pointer-events: none;
+  }
+  
+  .earn-hero-inner {
+    position: relative;
+    z-index: 2;
+  
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.95fr);
+  
+    align-items: center;
+  
+    gap: 85px;
+  }
+  
+  .earn-hero-content {
+    max-width: 690px;
+  }
+  
+  .earn-eyebrow {
+    display: inline-block;
+  
+    margin-bottom: 24px;
+  
+    color: #b9a9ff;
+  
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.19em;
+  }
+  
+  .earn-hero h1 {
+    margin: 0;
+  
+    font-size: clamp(58px, 7vw, 94px);
+    line-height: 0.93;
+    letter-spacing: -0.06em;
+    font-weight: 800;
+  }
+  
+  .earn-hero h1 span {
+    color: #a58cff;
+  }
+  
+  .earn-hero-content > p {
+    max-width: 600px;
+  
+    margin: 30px 0 0;
+  
+    color: rgba(255, 255, 255, 0.68);
+  
+    font-size: 18px;
+    line-height: 1.75;
+  }
+  
+  .earn-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+  
+    gap: 12px;
+  
+    margin-top: 36px;
+  }
+  
+  .earn-hero-note {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  
+    margin-top: 26px;
+  
+    color: rgba(255, 255, 255, 0.48);
+  
+    font-size: 12px;
+  }
+  
+  .earn-dot {
+    width: 7px;
+    height: 7px;
+  
+    border-radius: 50%;
+  
+    background: #a58cff;
+  }
+  
+  
+  /* =========================================================
+     HERO DASHBOARD
+     ========================================================= */
+  
+  .earn-preview {
+    position: relative;
+  
+    padding: 28px;
+  
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 28px;
+  
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.025)
+      );
+  
+    box-shadow:
+      0 35px 80px rgba(0, 0, 0, 0.35);
+  
+    backdrop-filter: blur(18px);
+  }
+  
+  .earn-preview-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    padding-bottom: 22px;
+  
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+    color: rgba(255, 255, 255, 0.5);
+  
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.17em;
+  }
+  
+  .earn-preview-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  
+    color: #c9bfff;
+  
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  
+  .earn-preview-status i {
+    width: 6px;
+    height: 6px;
+  
+    display: block;
+  
+    border-radius: 50%;
+  
+    background: #9f8aff;
+  }
+  
+  .earn-preview-title {
+    padding-top: 28px;
+  }
+  
+  .earn-preview-title span {
+    display: block;
+  
+    margin-bottom: 7px;
+  
+    color: rgba(255, 255, 255, 0.45);
+  
+    font-size: 12px;
+  }
+  
+  .earn-preview-title strong {
+    font-size: 42px;
+    letter-spacing: -0.045em;
+  }
+  
+  .earn-chart {
+    position: relative;
+  
+    height: 190px;
+  
+    margin-top: 15px;
+  
+    color: #a58cff;
+  }
+  
+  .earn-chart-grid {
+    position: absolute;
+    inset: 0;
+  
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.06) 1px,
+        transparent 1px
+      );
+  
+    background-size: 100% 47px;
+  }
+  
+  .earn-chart svg {
+    position: relative;
+    z-index: 2;
+  
+    width: 100%;
+    height: 100%;
+  }
+  
+  .earn-preview-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  
+    padding-top: 20px;
+  
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .earn-preview-bottom div {
+    padding-left: 15px;
+  
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .earn-preview-bottom div:first-child {
+    padding-left: 0;
+    border-left: none;
+  }
+  
+  .earn-preview-bottom span {
+    display: block;
+  
+    margin-bottom: 5px;
+  
+    color: rgba(255, 255, 255, 0.4);
+  
+    font-size: 10px;
+  }
+  
+  .earn-preview-bottom strong {
+    color: #ffffff;
+  
+    font-size: 15px;
+  }
+  
+  
+  /* =========================================================
+     SECTION LABEL
+     ========================================================= */
+  
+  .earn-section-label {
+    display: block;
+  
+    margin-bottom: 17px;
+  
+    color: var(--earn-purple);
+  
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.19em;
+  }
+  
+  
+  /* =========================================================
+     INTRO
+     ========================================================= */
+  
+  .earn-intro {
+    padding: 120px 0;
+  }
+  
+  .earn-intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+  
+    gap: 120px;
+  }
+  
+  .earn-intro h2 {
+    margin: 0;
+  
+    font-size: clamp(42px, 5vw, 64px);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+  
+  .earn-intro-grid > div:last-child {
+    padding-top: 15px;
+  }
+  
+  .earn-intro-grid p {
+    margin: 0 0 20px;
+  
+    color: var(--earn-muted);
+  
+    font-size: 17px;
+    line-height: 1.8;
+  }
+  
+  .earn-intro-grid p:last-child {
+    margin-bottom: 0;
+  }
+  
+  
+  /* =========================================================
+     HOW IT WORKS
+     ========================================================= */
+  
+  .earn-how {
+    padding: 120px 0;
+  
+    background: var(--earn-soft);
+  }
+  
+  .earn-section-heading {
+    max-width: 650px;
+  }
+  
+  .earn-section-heading h2 {
+    margin: 0;
+  
+    color: var(--earn-black);
+  
+    font-size: clamp(45px, 5vw, 68px);
+    line-height: 0.96;
+    letter-spacing: -0.055em;
+  }
+  
+  .earn-section-heading > p {
+    max-width: 580px;
+  
+    margin: 24px 0 0;
+  
+    color: var(--earn-muted);
+  
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  
+  .earn-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  
+    gap: 14px;
+  
+    margin-top: 65px;
+  }
+  
+  .earn-step {
+    position: relative;
+  
+    min-height: 355px;
+  
+    padding: 30px;
+  
+    border: 1px solid var(--earn-border);
+    border-radius: 24px;
+  
+    background: #ffffff;
+  
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      border-color 0.25s ease;
+  }
+  
+  .earn-step:hover {
+    transform: translateY(-5px);
+  
+    border-color: #d8d0ff;
+  
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.06);
+  }
+  
+  .earn-step-number {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+  
+    color: #cccccc;
+  
+    font-size: 11px;
+    font-weight: 800;
+  }
+  
+  .earn-step-icon {
+    width: 50px;
+    height: 50px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin-bottom: 65px;
+  
+    border-radius: 15px;
+  
+    color: var(--earn-purple);
+    background: var(--earn-purple-light);
+  
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
+  .earn-step h3 {
+    margin: 0 0 12px;
+  
+    color: var(--earn-black);
+  
+    font-size: 20px;
+    letter-spacing: -0.03em;
+  }
+  
+  .earn-step p {
+    margin: 0;
+  
+    color: var(--earn-muted);
+  
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     EARNING FACTORS
+     ========================================================= */
+  
+  .earn-factors {
+    padding: 120px 0;
+  }
+  
+  .earn-factors-header {
+    max-width: 760px;
+  }
+  
+  .earn-factors-header h2 {
+    margin: 0;
+  
+    color: var(--earn-black);
+  
+    font-size: clamp(43px, 5vw, 66px);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+  
+  .earn-factors-header p {
+    max-width: 600px;
+  
+    margin: 22px 0 0;
+  
+    color: var(--earn-muted);
+  
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  
+  .earn-factor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  
+    gap: 16px;
+  
+    margin-top: 60px;
+  }
+  
+  .earn-factor-card {
+    position: relative;
+  
+    min-height: 240px;
+  
+    padding: 34px;
+  
+    border: 1px solid var(--earn-border);
+    border-radius: 24px;
+  }
+  
+  .earn-factor-number {
+    display: block;
+  
+    margin-bottom: 55px;
+  
+    color: var(--earn-purple);
+  
+    font-size: 11px;
+    font-weight: 800;
+  }
+  
+  .earn-factor-card h3 {
+    margin: 0 0 10px;
+  
+    color: var(--earn-black);
+  
+    font-size: 22px;
+    letter-spacing: -0.03em;
+  }
+  
+  .earn-factor-card p {
+    max-width: 480px;
+  
+    margin: 0;
+  
+    color: var(--earn-muted);
+  
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     RATE SECTION
+     ========================================================= */
+  
+  .earn-rate-section {
+    padding: 110px 0;
+  
+    background: var(--earn-purple-light);
+  }
+  
+  .earn-rate-box {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+  
+    gap: 100px;
+  
+    align-items: center;
+  
+    padding: 65px;
+  
+    border-radius: 32px;
+  
+    background: #ffffff;
+  }
+  
+  .earn-rate-copy h2 {
+    margin: 0;
+  
+    font-size: clamp(42px, 5vw, 60px);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+  
+  .earn-rate-copy p {
+    max-width: 500px;
+  
+    margin: 22px 0 28px;
+  
+    color: var(--earn-muted);
+  
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  
+  .earn-rate-card {
+    padding: 30px;
+  
+    border: 1px solid var(--earn-border);
+    border-radius: 24px;
+  
+    background: #fafafa;
+  
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+  }
+  
+  .earn-rate-card-top {
+    display: flex;
+    justify-content: space-between;
+  
+    color: var(--earn-muted);
+  
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+  }
+  
+  .earn-edit {
+    color: var(--earn-purple);
+  }
+  
+  .earn-rate-price {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  
+    margin-top: 20px;
+  }
+  
+  .earn-rate-price strong {
+    color: var(--earn-black);
+  
+    font-size: 45px;
+    letter-spacing: -0.05em;
+  }
+  
+  .earn-rate-price span {
+    color: var(--earn-muted);
+  
+    font-size: 13px;
+  }
+  
+  .earn-rate-divider {
+    height: 1px;
+  
+    margin: 25px 0;
+  
+    background: var(--earn-border);
+  }
+  
+  .earn-rate-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    margin-bottom: 14px;
+  
+    font-size: 13px;
+  }
+  
+  .earn-rate-row span {
+    color: var(--earn-muted);
+  }
+  
+  .earn-rate-row strong {
+    color: var(--earn-black);
+  }
+  
+  .earn-rate-total {
+    margin-bottom: 0;
+  }
+  
+  .earn-rate-total strong {
+    color: var(--earn-purple);
+  
+    font-size: 18px;
+  }
+  
+  .earn-rate-card small {
+    display: block;
+  
+    margin-top: 18px;
+  
+    color: #8a8a8a;
+  
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  
+  
+  /* =========================================================
+     GROW
+     ========================================================= */
+  
+  .earn-grow {
+    padding: 120px 0;
+  }
+  
+  .earn-section-heading.centered {
+    max-width: 760px;
+  
+    margin: 0 auto;
+  
+    text-align: center;
+  }
+  
+  .earn-section-heading.centered > p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .earn-grow-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  
+    gap: 14px;
+  
+    margin-top: 60px;
+  }
+  
+  .earn-grow-card {
+    padding: 30px;
+  
+    border-radius: 24px;
+  
+    background: #111111;
+  
+    color: #ffffff;
+  }
+  
+  .earn-grow-icon {
+    width: 42px;
+    height: 42px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin-bottom: 70px;
+  
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+  
+    color: #b3a2ff;
+  
+    font-size: 10px;
+    font-weight: 800;
+  }
+  
+  .earn-grow-card h3 {
+    margin: 0 0 11px;
+  
+    font-size: 19px;
+    letter-spacing: -0.025em;
+  }
+  
+  .earn-grow-card p {
+    margin: 0;
+  
+    color: rgba(255, 255, 255, 0.55);
+  
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  
+  
+  /* =========================================================
+     SAFETY
+     ========================================================= */
+  
+  .earn-safety {
+    padding: 100px 0;
+  
+    background: var(--earn-soft);
+  }
+  
+  .earn-safety-box {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+  
+    gap: 35px;
+  
+    padding: 55px;
+  
+    border-radius: 30px;
+  
+    background: #ffffff;
+  }
+  
+  .earn-safety-icon {
+    width: 70px;
+    height: 70px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    border-radius: 20px;
+  
+    color: var(--earn-purple);
+    background: var(--earn-purple-light);
+  }
+  
+  .earn-safety-icon svg {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .earn-safety-box h2 {
+    margin: 0;
+  
+    color: var(--earn-black);
+  
+    font-size: clamp(38px, 4vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+  
+  .earn-safety-box p {
+    max-width: 700px;
+  
+    margin: 20px 0;
+  
+    color: var(--earn-muted);
+  
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  
+  .earn-text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  
+    color: var(--earn-purple);
+  
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  
+  .earn-text-link span {
+    transition: transform 0.2s ease;
+  }
+  
+  .earn-text-link:hover span {
+    transform: translateX(4px);
+  }
+  
+  
+  /* =========================================================
+     FAQ
+     ========================================================= */
+  
+  .earn-faq {
+    padding: 120px 0;
+  }
+  
+  .earn-faq-layout {
+    display: grid;
+    grid-template-columns: 0.75fr 1.25fr;
+  
+    gap: 120px;
+  
+    align-items: start;
+  }
+  
+  .earn-faq-title {
+    position: sticky;
+    top: 120px;
+  }
+  
+  .earn-faq-title h2 {
+    margin: 0;
+  
+    color: var(--earn-black);
+  
+    font-size: clamp(45px, 5vw, 64px);
+    line-height: 0.95;
+    letter-spacing: -0.055em;
+  }
+  
+  .earn-faq-list {
+    border-top: 1px solid var(--earn-border);
+  }
+  
+  .earn-faq-list details {
+    border-bottom: 1px solid var(--earn-border);
+  }
+  
+  .earn-faq-list summary {
+    min-height: 82px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    gap: 20px;
+  
+    cursor: pointer;
+  
+    list-style: none;
+  
+    color: var(--earn-black);
+  
+    font-size: 17px;
+    font-weight: 700;
+  }
+  
+  .earn-faq-list summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  .earn-faq-list summary span {
+    width: 30px;
+    height: 30px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    flex-shrink: 0;
+  
+    border-radius: 50%;
+  
+    color: var(--earn-purple);
+    background: var(--earn-purple-light);
+  
+    font-size: 18px;
+    font-weight: 400;
+  
+    transition: transform 0.2s ease;
+  }
+  
+  .earn-faq-list details[open] summary span {
+    transform: rotate(45deg);
+  }
+  
+  .earn-faq-list details p {
+    max-width: 680px;
+  
+    margin: -5px 45px 25px 0;
+  
+    color: var(--earn-muted);
+  
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  
+  
+  /* =========================================================
+     FINAL CTA
+     ========================================================= */
+  
+  .earn-final {
+    padding: 135px 0;
+  
+    text-align: center;
+  
+    background:
+      radial-gradient(
+        circle at 50% 0%,
+        rgba(116, 68, 255, 0.14),
+        transparent 42%
+      ),
+      #ffffff;
+  }
+  
+  .earn-final-label {
+    display: block;
+  
+    margin-bottom: 18px;
+  
+    color: var(--earn-purple);
+  
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+  }
+  
+  .earn-final h2 {
+    margin: 0;
+  
+    color: var(--earn-black);
+  
+    font-size: clamp(50px, 6vw, 78px);
+    line-height: 0.94;
+    letter-spacing: -0.06em;
+  }
+  
+  .earn-final p {
+    max-width: 580px;
+  
+    margin: 25px auto 0;
+  
+    color: var(--earn-muted);
+  
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  
+  .earn-final-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  
+    gap: 12px;
+  
+    margin-top: 34px;
+  }
+  
+  
+  /* =========================================================
+     TABLET
+     ========================================================= */
+  
+  @media (max-width: 1050px) {
+  
+    .earn-hero-inner {
+      grid-template-columns: 1fr;
+      gap: 60px;
+    }
+  
+    .earn-preview {
+      max-width: 650px;
+    }
+  
+    .earn-intro-grid {
+      gap: 60px;
+    }
+  
+    .earn-steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .earn-grow-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  
+    .earn-rate-box {
+      gap: 60px;
+    }
+  
+    .earn-faq-layout {
+      gap: 60px;
+    }
+  }
+  
+  
+  /* =========================================================
+     MOBILE
+     ========================================================= */
+  
+  @media (max-width: 700px) {
+  
+    .earn-container {
+      width: calc(100% - 32px);
+    }
+  
+    .earn-hero {
+      padding: 75px 0 70px;
+    }
+  
+    .earn-hero h1 {
+      font-size: 52px;
+    }
+  
+    .earn-hero-content > p {
+      font-size: 16px;
+      line-height: 1.65;
+    }
+  
+    .earn-hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .earn-hero-actions .earn-btn {
+      width: 100%;
+    }
+  
+    .earn-preview {
+      padding: 22px;
+  
+      border-radius: 22px;
+    }
+  
+    .earn-preview-title strong {
+      font-size: 36px;
+    }
+  
+    .earn-chart {
+      height: 150px;
+    }
+  
+    .earn-intro,
+    .earn-how,
+    .earn-factors,
+    .earn-grow,
+    .earn-faq {
+      padding: 80px 0;
+    }
+  
+    .earn-intro-grid {
+      grid-template-columns: 1fr;
+      gap: 35px;
+    }
+  
+    .earn-intro h2,
+    .earn-section-heading h2,
+    .earn-factors-header h2 {
+      font-size: 43px;
+    }
+  
+    .earn-steps {
+      grid-template-columns: 1fr;
+      margin-top: 42px;
+    }
+  
+    .earn-step {
+      min-height: auto;
+    }
+  
+    .earn-factor-grid {
+      grid-template-columns: 1fr;
+      margin-top: 42px;
+    }
+  
+    .earn-factor-card {
+      min-height: auto;
+    }
+  
+    .earn-rate-section {
+      padding: 70px 0;
+    }
+  
+    .earn-rate-box {
+      grid-template-columns: 1fr;
+      gap: 45px;
+  
+      padding: 30px;
+  
+      border-radius: 24px;
+    }
+  
+    .earn-rate-copy h2 {
+      font-size: 43px;
+    }
+  
+    .earn-rate-price strong {
+      font-size: 38px;
+    }
+  
+    .earn-grow-grid {
+      grid-template-columns: 1fr;
+      margin-top: 42px;
+    }
+  
+    .earn-grow-card {
+      min-height: 220px;
+    }
+  
+    .earn-safety {
+      padding: 70px 0;
+    }
+  
+    .earn-safety-box {
+      grid-template-columns: 1fr;
+      gap: 25px;
+  
+      padding: 30px;
+  
+      border-radius: 24px;
+    }
+  
+    .earn-safety-box h2 {
+      font-size: 40px;
+    }
+  
+    .earn-faq-layout {
+      grid-template-columns: 1fr;
+      gap: 45px;
+    }
+  
+    .earn-faq-title {
+      position: static;
+    }
+  
+    .earn-faq-title h2 {
+      font-size: 45px;
+    }
+  
+    .earn-faq-list summary {
+      min-height: 75px;
+  
+      font-size: 15px;
+    }
+  
+    .earn-faq-list details p {
+      margin-right: 0;
+    }
+  
+    .earn-final {
+      padding: 90px 0;
+    }
+  
+    .earn-final h2 {
+      font-size: 50px;
+    }
+  
+    .earn-final-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .earn-final-actions .earn-btn {
+      width: 100%;
+    }
+  }
+  
+  
+  /* =========================================================
+     SMALL MOBILE
+     ========================================================= */
+  
+  @media (max-width: 420px) {
+  
+    .earn-container {
+      width: calc(100% - 28px);
+    }
+  
+    .earn-hero h1 {
+      font-size: 46px;
+    }
+  
+    .earn-preview-bottom {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  
+    .earn-preview-bottom div {
+      padding-left: 0;
+      padding-bottom: 12px;
+  
+      border-left: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  
+    .earn-preview-bottom div:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  
+    .earn-intro h2,
+    .earn-section-heading h2,
+    .earn-factors-header h2 {
+      font-size: 38px;
+    }
+  
+    .earn-rate-copy h2 {
+      font-size: 38px;
+    }
+  
+    .earn-safety-box h2 {
+      font-size: 36px;
+    }
+  
+    .earn-final h2 {
+      font-size: 43px;
+    }
+  }
+  
+  
+  /* =========================================================
+     ACCESSIBILITY
+     ========================================================= */
+  
+  .earn-btn:focus-visible,
+  .earn-page a:focus-visible,
+  .earn-page summary:focus-visible {
+    outline: 3px solid rgba(116, 68, 255, 0.35);
+    outline-offset: 4px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .earn-btn,
+    .earn-step,
+    .earn-text-link span {
+      transition: none;
+    }
+  
+    .earn-btn:hover,
+    .earn-step:hover {
+      transform: none;
+    }
+  }
