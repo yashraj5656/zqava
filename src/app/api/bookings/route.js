@@ -7,6 +7,7 @@ import Razorpay from "razorpay";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Booking from "@/models/Booking";
+import Notification from "@/models/Notification";
 
 export const runtime = "nodejs";
 
@@ -996,6 +997,18 @@ export async function POST(request) {
            */
           status: "pending",
         });
+
+  // ============================================
+  // CREATE COMPANION NOTIFICATION
+  // ============================================
+
+  await Notification.create({
+    recipient: companionId,
+    type: "booking_created",
+    title: "New Booking Request",
+    message: `You received a new booking request for ${date} at ${time}.`,
+    bookingId: booking._id,
+  });
 
       return NextResponse.json(
         {

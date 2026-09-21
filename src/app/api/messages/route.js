@@ -7,6 +7,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Booking from "@/models/Booking";
 import Message from "@/models/Message";
+import Notification from "@/models/Notification";
 
 export const runtime = "nodejs";
 
@@ -388,6 +389,41 @@ export async function POST(request) {
       text: cleanText,
       read: false,
     });
+
+    /* =========================================================
+   CREATE NOTIFICATION FOR RECEIVER
+========================================================= */
+
+try {
+  const sender = await User.findById(userId)
+    .select("firstName lastName companionProfile")
+    .lean();
+
+  const senderName =
+    sender?.companionProfile?.displayName ||
+    `${sender?.firstName || ""} ${sender?.lastName || ""}`.trim() ||
+    "Someone";
+
+  await Notification.create({
+    recipient: receiverId,
+    type: "message",
+    title: `New message from ${senderName}`,
+    message:
+      cleanText.length > 80
+        ? `${cleanText.substring(0, 80)}...`
+        : cleanText,
+    bookingId: booking._id,
+  });
+} catch (notificationError) {
+  /*
+   * Notification failure should NOT cause
+   * the actual message to fail.
+   */
+  console.error(
+    "Message notification creation failed:",
+    notificationError
+  );
+}
 
     const populatedMessage =
       await Message.findById(message._id)

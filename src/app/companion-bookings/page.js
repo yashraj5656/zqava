@@ -150,6 +150,32 @@ export default function CompanionBookingsPage() {
     return name || "Guest";
   }
 
+
+  function hasBookingEnded(booking) {
+    if (!booking?.date || !booking?.time) {
+      return false;
+    }
+  
+    // Combine booking date and time
+    const start = new Date(`${booking.date}T${booking.time}`);
+  
+    if (Number.isNaN(start.getTime())) {
+      return false;
+    }
+  
+    // Duration is in hours
+    const durationHours = Number(booking.duration) || 1;
+  
+    const end = new Date(
+      start.getTime() + durationHours * 60 * 60 * 1000
+    );
+  
+    return Date.now() >= end.getTime();
+  }
+
+
+
+
   return (
     <main className="companion-bookings-page">
       <div className="companion-bookings-container">
@@ -305,8 +331,11 @@ export default function CompanionBookingsPage() {
               const isPending =
                 booking.status === "pending";
 
-              const isConfirmed =
+                const isConfirmed =
                 booking.status === "confirmed";
+              
+              const bookingEnded =
+                isConfirmed && hasBookingEnded(booking);
 
               return (
                 <article
@@ -486,28 +515,28 @@ export default function CompanionBookingsPage() {
       </>
     )}
 
-    {/* CONFIRMED ACTION */}
-    {isConfirmed && (
-      <button
-        type="button"
-        className="complete-button"
-        disabled={
-          actionLoading ===
-          `${booking._id}-completed`
-        }
-        onClick={() =>
-          updateBooking(
-            booking._id,
-            "completed"
-          )
-        }
-      >
-        {actionLoading ===
-        `${booking._id}-completed`
-          ? "Updating..."
-          : "Mark as completed"}
-      </button>
-    )}
+{/* CONFIRMED ACTION */}
+{isConfirmed && bookingEnded && (
+  <button
+    type="button"
+    className="complete-button"
+    disabled={
+      actionLoading ===
+      `${booking._id}-completed`
+    }
+    onClick={() =>
+      updateBooking(
+        booking._id,
+        "completed"
+      )
+    }
+  >
+    {actionLoading ===
+    `${booking._id}-completed`
+      ? "Updating..."
+      : "Mark as completed"}
+  </button>
+)}
 
   </div>
 

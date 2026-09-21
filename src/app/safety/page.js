@@ -31,7 +31,7 @@ export default function Safety() {
                 Community Guidelines
               </Link>
 
-              <Link href="/contact" className="safety-btn safety-btn-secondary">
+              <Link href="/Company" className="safety-btn safety-btn-secondary">
                 Report an Issue
               </Link>
             </div>
@@ -345,7 +345,7 @@ export default function Safety() {
               </p>
 
               <Link
-                href="/contact"
+                href="/Company"
                 className="safety-btn safety-btn-dark"
               >
                 Report a Problem

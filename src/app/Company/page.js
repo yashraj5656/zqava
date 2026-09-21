@@ -668,7 +668,7 @@ export default function Company() {
               <div>
                 <span>Email</span>
 
-                <a href="mailto:hello@zqava.com">
+                <a href="mailto:zyqentra@gmail.com">
                   hello@zqava.com
                 </a>
               </div>
@@ -685,7 +685,7 @@ export default function Company() {
               <div>
                 <span>Support</span>
 
-                <a href="mailto:support@zqava.com">
+                <a href="mailto:zyqentra@gmail.com">
                   support@zqava.com
                 </a>
               </div>
@@ -702,7 +702,7 @@ export default function Company() {
               <div>
                 <span>Partnerships</span>
 
-                <a href="mailto:partners@zqava.com">
+                <a href="mailto:zyqentra@gmail.com">
                   partners@zqava.com
                 </a>
               </div>
