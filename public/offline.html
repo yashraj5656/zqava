@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b0b">
+  <title>You're offline — ZQAVA</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #080b0b;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    main { max-width: 360px; }
+
+    .logo {
+      color: #00cba9;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    h1 { font-size: 25px; }
+
+    p {
+      color: #a0aaa8;
+      line-height: 1.6;
+    }
+
+    button {
+      margin-top: 16px;
+      padding: 13px 22px;
+      border: 0;
+      border-radius: 10px;
+      background: #00cba9;
+      color: #061412;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="logo">ZQAVA</div>
+    <h1>You're offline</h1>
+    <p>
+      Check your internet connection to access bookings,
+      messages and companion profiles.
+    </p>
+    <button onclick="location.reload()">Try again</button>
+  </main>
+</body>
+</html>
