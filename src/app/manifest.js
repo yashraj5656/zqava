@@ -13,19 +13,19 @@ export default function manifest() {
     orientation: "portrait-primary",
     icons: [
       {
-        src: "/icon-192.png",
+        src: "/zqava.jpg",
         sizes: "192x192",
-        type: "image/png",
+        type: "image/jpg",
       },
       {
-        src: "/icon-512.png",
+        src: "/zqava.jpg",
         sizes: "512x512",
-        type: "image/png",
+        type: "image/jpg",
       },
       {
-        src: "/icon-maskable-512.png",
+        src: "/zqava.jpg",
         sizes: "512x512",
-        type: "image/png",
+        type: "image/jpg",
         purpose: "maskable",
       },
     ],
