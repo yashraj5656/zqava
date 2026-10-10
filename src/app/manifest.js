@@ -1,8 +1,8 @@
 export default function manifest() {
   return {
     id: "/",
-    name: "",
-    short_name: "",
+    name: "ZQAVA — Find Someone to Go With",
+    short_name: "ZQAVA",
     description:
       "Find companions for coffee, movies, events, travel, gaming and more.",
     start_url: "/",
