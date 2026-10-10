@@ -2,7 +2,7 @@ export default function manifest() {
   return {
     id: "/",
     name: "",
-    short_name: "ZQAVA",
+    short_name: "",
     description:
       "Find companions for coffee, movies, events, travel, gaming and more.",
     start_url: "/",
@@ -18,12 +18,12 @@ export default function manifest() {
         type: "image/jpg",
       },
       {
-        src: "/zqava.jpg",
+        src: "/zqavab.jpg",
         sizes: "512x512",
         type: "image/jpg",
       },
       {
-        src: "/zqava.jpg",
+        src: "/zqavab.jpg",
         sizes: "512x512",
         type: "image/jpg",
         purpose: "maskable",
