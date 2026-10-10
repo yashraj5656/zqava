@@ -1,7 +1,7 @@
 export default function manifest() {
   return {
     id: "/",
-    name: "ZQAVA — Find Someone to Go With",
+    name: "",
     short_name: "ZQAVA",
     description:
       "Find companions for coffee, movies, events, travel, gaming and more.",
@@ -13,7 +13,7 @@ export default function manifest() {
     orientation: "portrait-primary",
     icons: [
       {
-        src: "/zqava.jpg",
+        src: "/zqavab.jpg",
         sizes: "192x192",
         type: "image/jpg",
       },

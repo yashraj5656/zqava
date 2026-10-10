@@ -31,7 +31,7 @@ export const metadata = {
   publisher: "ZQAVA",
 
   icons: {
-    icon: "/favicon.ico",
+    icon: "/zqava.jpg",
   },
 
   openGraph: {
