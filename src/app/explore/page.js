@@ -12,6 +12,8 @@ export default function ExplorePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
   // Filters
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
@@ -321,202 +323,195 @@ useEffect(() => {
         </section>
 
         {/* FILTERS */}
-        <section className="explore-filters">
+        
+{/* FILTERS */}
+<section className="explore-filters">
 
-          <div className="filters-top">
-            <div>
-              <h2>Find your match</h2>
-              <p>
-                Use the filters to narrow down your options.
-              </p>
-            </div>
+  {/* FILTER HEADER */}
+  <div className="filters-top">
+    <div>
+      <h2>Find your match</h2>
+      {/*<p>Use the filters to narrow down your options.</p>*/}
+    </div>
 
-            {hasFilters && (
-              <button
-                type="button"
-                className="clear-filters"
-                onClick={clearFilters}
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
+    {hasFilters && (
+      <button
+        type="button"
+        className="clear-filters"
+        onClick={clearFilters}
+      >
+        Clear filters
+      </button>
+    )}
+  </div>
 
-          <div className="filters-grid">
+  {/* SEARCH - ALWAYS VISIBLE */}
+  <div className="filter-group filter-search">
+    {/*<label htmlFor="search">Search</label>*/}
 
-            {/* SEARCH */}
-            <div className="filter-group filter-search">
-              <label htmlFor="search">
-                Search
-              </label>
+    <div className="search-input-wrapper">
+      <span className="search-icon">🔎</span>
 
-              <div className="search-input-wrapper">
-                <span className="search-icon">
-                  🔎
-                </span>
+      <input
+        id="search"
+        type="text"
+        placeholder="Name, city, interest..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+    </div>
+  </div>
 
-                <input
-                  id="search"
-                  type="text"
-                  placeholder="Name, city, interest..."
-                  value={search}
-                  onChange={(e) =>
-                    setSearch(e.target.value)
-                  }
-                />
-              </div>
-            </div>
+  {/* MOBILE FILTER TOGGLE */}
+  <button
+    type="button"
+    className="mobile-filter-toggle"
+    onClick={() =>
+      setShowMobileFilters((prev) => !prev)
+    }
+    aria-expanded={showMobileFilters}
+    aria-controls="advanced-filters"
+  >
+    <span>
+      <span className="filter-toggle-icon">☷</span>
+      Filters & Sort
+    </span>
 
-            {/* CITY */}
-            <div className="filter-group">
-              <label htmlFor="city">
-                City
-              </label>
+    <span className="filter-toggle-right">
+      {showMobileFilters ? "Hide" : "Show"}
+      <span className={showMobileFilters ? "toggle-arrow open" : "toggle-arrow"}>
+        ▼
+      </span>
+    </span>
+  </button>
 
-              <select
-                id="city"
-                value={city}
-                onChange={(e) =>
-                  setCity(e.target.value)
-                }
-              >
-                <option value="">
-                  All cities
-                </option>
+  {/* ADVANCED FILTERS */}
+  <div
+    id="advanced-filters"
+    className={`advanced-filters ${
+      showMobileFilters ? "mobile-filters-open" : ""
+    }`}
+  >
+    <br></br><div className="filters-grid">
 
-                {cities.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
+      {/* CITY */}
+      <div className="filter-group">
+        <label htmlFor="city">City</label>
 
-            {/* ACTIVITY */}
-            <div className="filter-group">
-              <label htmlFor="activity">
-                Interest / Style
-              </label>
+        <select
+          id="city"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        >
+          <option value="">All cities</option>
 
-              <select
-                id="activity"
-                value={activity}
-                onChange={(e) =>
-                  setActivity(e.target.value)
-                }
-              >
-                <option value="">
-                  All interests
-                </option>
+          {cities.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      </div>
 
-                {activities.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
+      {/* ACTIVITY */}
+      <div className="filter-group">
+        <label htmlFor="activity">Interest / Style</label>
 
-            {/* SORT */}
-            <div className="filter-group">
-              <label htmlFor="sort">
-                Sort by
-              </label>
+        <select
+          id="activity"
+          value={activity}
+          onChange={(e) => setActivity(e.target.value)}
+        >
+          <option value="">All interests</option>
 
-              <select
-                id="sort"
-                value={sort}
-                onChange={(e) =>
-                  setSort(e.target.value)
-                }
-              >
-                <option value="default">
-                  Recommended
-                </option>
+          {activities.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      </div>
 
-                <option value="price-low">
-                  Price: Low to high
-                </option>
+      {/* SORT */}
+      <div className="filter-group">
+        <label htmlFor="sort">Sort by</label>
 
-                <option value="price-high">
-                  Price: High to low
-                </option>
+        <select
+          id="sort"
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value="default">Recommended</option>
+          <option value="price-low">Price: Low to high</option>
+          <option value="price-high">Price: High to low</option>
+          <option value="name">Name: A-Z</option>
+        </select>
+      </div>
 
-                <option value="name">
-                  Name: A-Z
-                </option>
-              </select>
-            </div>
+    </div>
 
-          </div>
+    {/* PRICE */}
+    <div className="price-filter">
+      <div className="price-filter-header">
+        <label htmlFor="price">Maximum hourly price</label>
 
-          {/* PRICE */}
-          <div className="price-filter">
-            <div className="price-filter-header">
-              <label htmlFor="price">
-                Maximum hourly price
-              </label>
+        <strong>
+          ₹{Number(maxPrice).toLocaleString("en-IN")}
+        </strong>
+      </div>
 
-              <strong>
-                ₹{Number(maxPrice).toLocaleString("en-IN")}
-              </strong>
-            </div>
+      <input
+        id="price"
+        type="range"
+        min="0"
+        max="100000"
+        step="100"
+        value={maxPrice}
+        onChange={(e) =>
+          setMaxPrice(Number(e.target.value))
+        }
+      />
 
-            <input
-              id="price"
-              type="range"
-              min="0"
-              max="100000"
-              step="100"
-              value={maxPrice}
-              onChange={(e) =>
-                setMaxPrice(Number(e.target.value))
-              }
-            />
+      <div className="price-range-labels">
+        <span>₹0</span>
+        <span>₹1,00,000+</span>
+      </div>
+    </div>
 
-            <div className="price-range-labels">
-              <span>₹0</span>
-              <span>₹1,00,000+</span>
-            </div>
-          </div>
+    {/* TOGGLES */}
+    <div className="filter-options">
 
-          {/* TOGGLES */}
-          <div className="filter-options">
+      <label className="filter-checkbox">
+        <input
+          type="checkbox"
+          checked={onlyAvailable}
+          onChange={(e) =>
+            setOnlyAvailable(e.target.checked)
+          }
+        />
 
-            <label className="filter-checkbox">
-              <input
-                type="checkbox"
-                checked={onlyAvailable}
-                onChange={(e) =>
-                  setOnlyAvailable(e.target.checked)
-                }
-              />
+        <span className="custom-checkbox"></span>
+        <span>Available now</span>
+      </label>
 
-              <span className="custom-checkbox"></span>
+      <label className="filter-checkbox">
+        <input
+          type="checkbox"
+          checked={onlyVerified}
+          onChange={(e) =>
+            setOnlyVerified(e.target.checked)
+          }
+        />
 
-              <span>
-                Available now
-              </span>
-            </label>
+        <span className="custom-checkbox"></span>
+        <span>Verified companions</span>
+      </label>
 
-            <label className="filter-checkbox">
-              <input
-                type="checkbox"
-                checked={onlyVerified}
-                onChange={(e) =>
-                  setOnlyVerified(e.target.checked)
-                }
-              />
+    </div>
+  </div>
 
-              <span className="custom-checkbox"></span>
+</section>
 
-              <span>
-                Verified companions
-              </span>
-            </label>
-
-          </div>
-        </section>
 
         {/* RESULTS */}
         <section className="explore-results">

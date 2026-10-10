@@ -1429,6 +1429,12 @@ img {
   font-weight: 700;
 }
 
+.cta-button:hover {
+  background: #000000;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
 .cta-decoration {
   position: absolute;
   border: 1px solid rgba(255, 255, 255, 0.13);

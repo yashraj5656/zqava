@@ -986,3 +986,154 @@
 }
 
 
+
+/* Mobile filter toggle - hidden on desktop */
+.mobile-filter-toggle {
+  display: none;
+}
+
+.advanced-filters {
+  display: block;
+}
+
+/* Mobile responsive filters */
+@media (max-width: 768px) {
+
+  .explore-filters {
+    padding: 16px;
+  }
+
+  /* Compact heading */
+  .filters-top {
+    margin-bottom: 16px;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .filters-top h2 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .filters-top p {
+    font-size: 13px;
+    margin: 0;
+  }
+
+  /* Search remains visible */
+  .filter-search {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+  }
+
+  .search-input-wrapper input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  /* Toggle button */
+  .mobile-filter-toggle {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 13px 15px;
+    margin-bottom: 0;
+
+    border: 1px solid rgba(0, 203, 169, 0.25);
+    border-radius: 10px;
+
+    background: rgba(0, 203, 169, 0.06);
+    color: inherit;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .mobile-filter-toggle > span,
+  .filter-toggle-right {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .filter-toggle-icon {
+    font-size: 19px;
+    color: #00cba9;
+  }
+
+  .filter-toggle-right {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .toggle-arrow {
+    display: inline-block;
+    font-size: 10px;
+    transition: transform 0.2s ease;
+  }
+
+  .toggle-arrow.open {
+    transform: rotate(180deg);
+  }
+
+  /* Hide advanced filters by default */
+  .advanced-filters {
+    display: none;
+    padding-top: 18px;
+  }
+
+  /* Show them when toggled */
+  .advanced-filters.mobile-filters-open {
+    display: block;
+  }
+
+  /* Stack filter fields on mobile */
+  .advanced-filters .filters-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .advanced-filters .filter-group {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .advanced-filters select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .advanced-filters .price-filter {
+    margin-top: 22px;
+  }
+
+  .advanced-filters .filter-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 20px;
+  }
+}
+
+/* Desktop: always show advanced filters */
+@media (min-width: 769px) {
+  .mobile-filter-toggle {
+    display: none;
+  }
+
+  .advanced-filters {
+    display: block !important;
+  }
+}
