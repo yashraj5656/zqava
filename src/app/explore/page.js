@@ -754,7 +754,37 @@ useEffect(() => {
 
         </section>
 
+ {/* =========================
+          FINAL CTA
+      ========================== */}
 
+<section className="final-cta">
+
+<div>
+
+  <span className="section-label">
+    ZQAVA
+  </span>
+
+  <h2>
+    Your personality is
+    <br />
+    worth experiencing.
+  </h2>
+
+  <p>
+    Create your profile. Choose your experiences.
+    Meet new people.
+  </p>
+
+  <a href="/become-a-companion" className="final-cta-button">
+    Become a companion
+    <span>→</span>
+  </a>
+
+</div>
+
+</section>
 
       </div>
     </main>

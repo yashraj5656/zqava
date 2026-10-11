@@ -56,7 +56,18 @@ export default function Navbar() {
           <Link href="/become-a-companion">Become Companion</Link>
           <Link href="/bookings">My companion</Link>
           <Link href="/companion-bookings">Bookings</Link>
-          <Link href="/companion-bookings">Earnings</Link>
+          <Link href="/companion-earnings">Earnings</Link>
+          {!loading && user && (
+            accountType === "companion" ? (
+              <Link href="/creator/dashboard">
+                Refer & Earn
+              </Link>
+            ) : (
+              <Link href="/creator/dashboard">
+                Refer & Earn
+              </Link>
+            )
+          )}
           {!loading && user && (
             accountType === "companion" ? (
               <Link href="/companion-profile">
@@ -68,6 +79,7 @@ export default function Navbar() {
               </Link>
             )
           )}
+
          
 
         </nav>
@@ -119,20 +131,8 @@ export default function Navbar() {
       <Link href="/explore" onClick={closeMenu}>
         Explore
       </Link>
-      <Link href="/bookings" onClick={closeMenu}>My Companion</Link>
-      <Link href="/companion-bookings" onClick={closeMenu}>My Bookings</Link>
-      <Link href="/companion-bookings" onClick={closeMenu}>My Earnings</Link>
-      <Link href="/become-a-companion" onClick={closeMenu}>Become Companion</Link>
-      <Link href="/earn" onClick={closeMenu}>
-        How you earn
-      </Link>
-
-     {/* <Link href="/safety" onClick={closeMenu}>
-        Safety
-      </Link>*/}
-
-      {/* Logged-in user */}
-      {!loading && user && (
+            {/* Logged-in user */}
+            {!loading && user && (
         accountType === "companion" ? (
           <Link
             href="/companion-profile"
@@ -149,6 +149,30 @@ export default function Navbar() {
           </Link>
         )
       )}
+      <Link href="/bookings" onClick={closeMenu}>My Companion</Link>
+      <Link href="/companion-bookings" onClick={closeMenu}>My Bookings</Link>
+      <Link href="/companion-earnings" onClick={closeMenu}>My Earnings</Link>
+      <Link href="/become-a-companion" onClick={closeMenu}>Become Companion</Link>
+      <Link href="/earn" onClick={closeMenu}>
+        How you earn
+      </Link>
+
+     {/* <Link href="/safety" onClick={closeMenu}>
+        Safety
+      </Link>*/}
+
+
+      {!loading && user && (
+            accountType === "companion" ? (
+              <Link href="/creator/dashboard" onClick={closeMenu}>
+                Refer & Earn
+              </Link>
+            ) : (
+              <Link href="/creator/dashboard" onClick={closeMenu}>
+                Refer & Earn
+              </Link>
+            )
+          )}
     </div>
 
     {/* Mobile Actions */}

@@ -52,7 +52,18 @@ export async function GET() {
 
     const user = await User.findById(userId).select("role");
 
-    if (!user || user.role !== "companion") {
+        {/*    if (!user || user.role !== "companion") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Only companions can access bank details.",
+        },
+        { status: 403 }
+      );
+    }*/}
+
+
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
@@ -142,7 +153,17 @@ export async function POST(request) {
 
     const user = await User.findById(userId).select("role");
 
-    if (!user || user.role !== "companion") {
+    {/*    if (!user || user.role !== "companion") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Only companions can access bank details.",
+        },
+        { status: 403 }
+      );
+    }*/}
+
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
