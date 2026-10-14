@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import InstagramRedirect from "@/components/InstagramRedirect";
 
 
 const inter = Inter({
@@ -68,7 +69,7 @@ export default function RootLayout({ children }) {
               {/* Favicon */}
         <link rel="icon" href="/zqava.jpg" /></head>
       <body className={inter.className}>
-      <Navbar/><PWARegister />
+      <Navbar/> <InstagramRedirect /><PWARegister />
         {children}
       <Footer/>  
       </body>
