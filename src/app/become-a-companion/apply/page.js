@@ -366,12 +366,12 @@ export default function Apply() {
           </div>
 
           <div className="success-actions">
-            <Link href="/explore" className="apply-btn apply-btn-primary">
-              Back to ZQAVA
+            <Link href="/companion-profile#weekly-availability" className="apply-btn apply-btn-primary">
+              Complete Profile
             </Link>
 
-            <Link href="/companion-profile" className="apply-btn apply-btn-secondary">
-              Profile
+            <Link href="/explore" className="apply-btn apply-btn-secondary">
+              Home
             </Link>
           </div>
 
