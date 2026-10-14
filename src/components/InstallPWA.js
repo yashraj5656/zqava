@@ -8,18 +8,21 @@ export default function InstallPWA() {
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      window.navigator.standalone === true;
+    const checkInstalled = () => {
+      setIsInstalled(
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true
+      );
+    };
 
-    setIsInstalled(standalone);
+    checkInstalled();
 
     function handleBeforeInstallPrompt(event) {
       event.preventDefault();
       setInstallPrompt(event);
     }
 
-    function handleInstalled() {
+    function handleAppInstalled() {
       setIsInstalled(true);
       setInstallPrompt(null);
     }
@@ -28,38 +31,52 @@ export default function InstallPWA() {
       "beforeinstallprompt",
       handleBeforeInstallPrompt
     );
-    window.addEventListener("appinstalled", handleInstalled);
+
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
         handleBeforeInstallPrompt
       );
-      window.removeEventListener("appinstalled", handleInstalled);
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
   async function handleInstall() {
-    if (installPrompt) {
-      await installPrompt.prompt();
-      await installPrompt.userChoice;
-      setInstallPrompt(null);
+    if (!installPrompt) {
+      console.log(
+        "The browser installation prompt is not currently available."
+      );
       return;
     }
 
-    alert(
-      "To install ZQAVA, open your browser menu and choose " +
-      "'Install app' or 'Add to Home Screen'."
-    );
+    await installPrompt.prompt();
+
+    const choice = await installPrompt.userChoice;
+
+    if (choice.outcome === "accepted") {
+      setInstallPrompt(null);
+    } else {
+      // The user cancelled; they can try again later
+      // if the browser makes the prompt available again.
+      setInstallPrompt(null);
+    }
   }
 
- // if (isInstalled) return null;
+  if (isInstalled) return null;
 
   return (
     <button
       type="button"
       className="install-pwa-link"
       onClick={handleInstall}
+      disabled={!installPrompt}
+      title={
+        installPrompt
+          ? "Install ZQAVA"
+          : "Installation prompt is not available yet"
+      }
     >
       ↓ Download App
     </button>
