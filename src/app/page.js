@@ -10,7 +10,7 @@ const companions = [
     city: "Jaipur",
     price: "₹599",
     image:
-      "https://res.cloudinary.com/c4bsigci/image/upload/v1789985014/zqava/companions/vgelubust4p12dkhb2d2.jpg",
+      "vgelubust4p12dkhb2d2.jpg",
     tags: ["Coffee", "Shopping", "Movies"],
     rating: "4.9",
     reviews: 28,
@@ -21,7 +21,7 @@ const companions = [
     city: "Jaipur",
     price: "₹499",
     image:
-      "https://res.cloudinary.com/c4bsigci/image/upload/v1789984300/zqava/companions/gayyvctkfxzgq8tcmrny.jpg",
+      "gayyvctkfxzgq8tcmrny.jpg",
     tags: ["Gaming", "Food", "Travel"],
     rating: "4.8",
     reviews: 19,
@@ -32,7 +32,7 @@ const companions = [
     city: "Jaipur",
     price: "₹699",
     image:
-      "https://res.cloudinary.com/c4bsigci/image/upload/v1789985808/zqava/companions/wectu8q58f4tlvfyaik5.jpg",
+      "wectu8q58f4tlvfyaik5.jpg",
     tags: ["Photography", "Cafe", "Travel"],
     rating: "5.0",
     reviews: 16,
