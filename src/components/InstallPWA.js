@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 
 export default function InstallPWA() {
   const [installPrompt, setInstallPrompt] = useState(null);
-  const [isInstalled, setIsInstalled] = useState(false);
+  const [installed, setInstalled] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const checkInstalled = () => {
-      setIsInstalled(
+      setInstalled(
         window.matchMedia("(display-mode: standalone)").matches ||
         window.navigator.standalone === true
       );
@@ -17,68 +18,69 @@ export default function InstallPWA() {
 
     checkInstalled();
 
-    function handleBeforeInstallPrompt(event) {
+    const handlePrompt = (event) => {
       event.preventDefault();
       setInstallPrompt(event);
-    }
+      setMessage("");
+    };
 
-    function handleAppInstalled() {
-      setIsInstalled(true);
+    const handleInstalled = () => {
+      setInstalled(true);
       setInstallPrompt(null);
-    }
+      setMessage("");
+    };
 
-    window.addEventListener(
-      "beforeinstallprompt",
-      handleBeforeInstallPrompt
-    );
-
-    window.addEventListener("appinstalled", handleAppInstalled);
+    window.addEventListener("beforeinstallprompt", handlePrompt);
+    window.addEventListener("appinstalled", handleInstalled);
 
     return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-      window.removeEventListener("appinstalled", handleAppInstalled);
+      window.removeEventListener("beforeinstallprompt", handlePrompt);
+      window.removeEventListener("appinstalled", handleInstalled);
     };
   }, []);
 
   async function handleInstall() {
     if (!installPrompt) {
-      console.log(
-        "The browser installation prompt is not currently available."
+      setMessage(
+        "Install prompt unavailable. Check your PWA manifest, service worker, and browser installability."
       );
       return;
     }
 
-    await installPrompt.prompt();
+    try {
+      await installPrompt.prompt();
+      const result = await installPrompt.userChoice;
 
-    const choice = await installPrompt.userChoice;
-
-    if (choice.outcome === "accepted") {
-      setInstallPrompt(null);
-    } else {
-      // The user cancelled; they can try again later
-      // if the browser makes the prompt available again.
+      if (result.outcome === "accepted") {
+        setMessage("Installation accepted.");
+      } else {
+        setMessage("Installation cancelled.");
+      }
+    } catch (error) {
+      console.error("PWA installation error:", error);
+      setMessage("Could not open the install dialog. Check the browser console.");
+    } finally {
       setInstallPrompt(null);
     }
   }
 
-  if (isInstalled) return null;
+  if (installed) return null;
 
   return (
-    <button
-      type="button"
-      className="install-pwa-link"
-      onClick={handleInstall}
-      disabled={!installPrompt}
-      title={
-        installPrompt
-          ? "Install ZQAVA"
-          : "Installation prompt is not available yet"
-      }
-    >
-      ↓ Download App
-    </button>
+    <div>
+      <button
+        type="button"
+        className="install-pwa-link"
+        onClick={handleInstall}
+      >
+        ↓ Install ZQAVA
+      </button>
+
+      {message && (
+        <p role="status" style={{ fontSize: "12px", marginTop: "8px" }}>
+          {message}
+        </p>
+      )}
+    </div>
   );
 }
