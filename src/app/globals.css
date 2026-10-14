@@ -2318,19 +2318,4 @@ img {
   }
   
 
-  
-.install-pwa-link {
-  background: transparent;
-  color: #000000;
-  padding: 9px 14px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s ease, color 0.2s ease;
-}
 
-.install-pwa-link:hover {
-  color: #7444ff;
-}
