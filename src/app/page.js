@@ -1,25 +1,27 @@
 import Head from "next/head";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth";
 
 const companions = [
   {
-    name: "Riya",
+    name: "Priya",
     age: 24,
     city: "Jaipur",
     price: "₹599",
     image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80",
+      "https://res.cloudinary.com/c4bsigci/image/upload/v1789985014/zqava/companions/vgelubust4p12dkhb2d2.jpg",
     tags: ["Coffee", "Shopping", "Movies"],
     rating: "4.9",
     reviews: 28,
   },
   {
-    name: "Arjun",
+    name: "Aarav",
     age: 26,
     city: "Jaipur",
     price: "₹499",
     image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+      "https://res.cloudinary.com/c4bsigci/image/upload/v1789984300/zqava/companions/gayyvctkfxzgq8tcmrny.jpg",
     tags: ["Gaming", "Food", "Travel"],
     rating: "4.8",
     reviews: 19,
@@ -27,10 +29,10 @@ const companions = [
   {
     name: "Ananya",
     age: 23,
-    city: "Udaipur",
+    city: "Jaipur",
     price: "₹699",
     image:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+      "https://res.cloudinary.com/c4bsigci/image/upload/v1789985808/zqava/companions/wectu8q58f4tlvfyaik5.jpg",
     tags: ["Photography", "Cafe", "Travel"],
     rating: "5.0",
     reviews: 16,
@@ -70,7 +72,13 @@ const categories = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+
+  if (session?.userId) {
+    redirect("/explore");
+  }
+
   return (
     <>
       <Head>

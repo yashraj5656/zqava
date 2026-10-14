@@ -60,11 +60,11 @@ export default function Navbar() {
           {!loading && user && (
             accountType === "companion" ? (
               <Link href="/creator/dashboard">
-                Refer & Earn
+                Affiliate
               </Link>
             ) : (
               <Link href="/creator/dashboard">
-                Refer & Earn
+                Affiliate
               </Link>
             )
           )}
@@ -165,11 +165,11 @@ export default function Navbar() {
       {!loading && user && (
             accountType === "companion" ? (
               <Link href="/creator/dashboard" onClick={closeMenu}>
-                Refer & Earn
+                Affiliate
               </Link>
             ) : (
               <Link href="/creator/dashboard" onClick={closeMenu}>
-                Refer & Earn
+                Affiliate
               </Link>
             )
           )}
