@@ -1,11 +1,11 @@
 export default function manifest() {
   return {
     id: "/",
-    name: "ZQAVA — Find Someone to Go With",
+    name: "ZQAVA — Get Someone",
     short_name: "ZQAVA",
     description:
       "Find companions for coffee, movies, events, travel, gaming and more.",
-    start_url: "/",
+    start_url: "/explore",
     scope: "/",
     display: "standalone",
     background_color: "#080b0b",
