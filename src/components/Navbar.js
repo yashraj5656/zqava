@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import "./NotificationBell.css";
+import InstallPWA from "@/components/InstallPWA";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -228,7 +229,7 @@ export default function Navbar() {
             Get started
           </Link>
         </>
-      )}
+      )}<InstallPWA />
     </div>
   </div>
 )}
