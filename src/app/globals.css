@@ -2323,8 +2323,8 @@ img {
   .zqava-push-prompt {
     position: fixed;
     right: 20px;
-    bottom: 100px;
-    z-index: 9999;
+    bottom: 20px;
+    z-index: 9980;
     width: min(420px, calc(100vw - 32px));
     display: flex;
     align-items: center;
@@ -2388,7 +2388,7 @@ img {
   @media (max-width: 480px) {
     .zqava-push-prompt {
       right: 12px;
-      bottom: 100px;
+      bottom: 12px;
       width: calc(100vw - 24px);
       padding: 16px 12px;
       gap: 9px;
