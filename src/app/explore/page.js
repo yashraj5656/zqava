@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import "./explore.css";
+import PushNotificationSettings from "@/components/PushNotificationSettings";
 
 export default function ExplorePage() {
   const [companions, setCompanions] = useState([]);
@@ -784,7 +785,7 @@ useEffect(() => {
 
 </div>
 
-</section>
+</section><PushNotificationSettings />
 
       </div>
     </main>

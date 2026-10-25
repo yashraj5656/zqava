@@ -8,6 +8,7 @@ import User from "@/models/User";
 import Booking from "@/models/Booking";
 import Message from "@/models/Message";
 import Notification from "@/models/Notification";
+import { sendPushToUser } from "@/lib/webPush";
 
 export const runtime = "nodejs";
 
@@ -424,6 +425,36 @@ try {
     notificationError
   );
 }
+
+
+/* =========================================================
+   SEND PUSH NOTIFICATION TO MESSAGE RECEIVER
+========================================================= */
+
+try {
+  const sender = await User.findById(userId)
+    .select("firstName lastName companionProfile")
+    .lean();
+
+  const senderName =
+    sender?.companionProfile?.displayName ||
+    `${sender?.firstName || ""} ${sender?.lastName || ""}`.trim() ||
+    "Someone";
+
+  await sendPushToUser(receiverId.toString(), {
+    title: `New message from ${senderName}`,
+    body:
+      cleanText.length > 100
+        ? `${cleanText.substring(0, 100)}...`
+        : cleanText,
+    url: `/messages?bookingId=${booking._id.toString()}`,
+    tag: `message-${booking._id.toString()}`,
+  });
+} catch (pushError) {
+  // A push failure must not prevent the message from being sent.
+  console.error("Message push notification failed:", pushError);
+}
+
 
     const populatedMessage =
       await Message.findById(message._id)

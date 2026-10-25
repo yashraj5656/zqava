@@ -54,3 +54,68 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+
+self.addEventListener("push", (event) => {
+  let data = {};
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch {
+      data = {
+        body: event.data.text(),
+      };
+    }
+  }
+
+  const title = data.title || "ZQAVA";
+  const options = {
+    body: data.body || "You have a new notification.",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    tag: data.tag || "zqava-notification",
+    data: {
+      url: data.url || "/",
+    },
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const rawUrl = event.notification.data?.url || "/";
+  let targetUrl;
+
+  try {
+    targetUrl = new URL(rawUrl, self.location.origin);
+
+    // Never let a push payload navigate users to an external site.
+    if (targetUrl.origin !== self.location.origin) {
+      targetUrl = new URL("/", self.location.origin);
+    }
+  } catch {
+    targetUrl = new URL("/", self.location.origin);
+  }
+
+  event.waitUntil(
+    self.clients.matchAll({
+      type: "window",
+      includeUncontrolled: true,
+    }).then(async (clients) => {
+      for (const client of clients) {
+        if (new URL(client.url).origin === self.location.origin) {
+          await client.focus();
+          await client.navigate(targetUrl.href);
+          return;
+        }
+      }
+
+      return self.clients.openWindow(targetUrl.href);
+    })
+  );
+});
