@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function decodeVapidKey(base64String) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -9,38 +10,105 @@ function decodeVapidKey(base64String) {
     .replace(/_/g, "/");
 
   const rawData = window.atob(base64);
+
   return Uint8Array.from(rawData, (char) => char.charCodeAt(0));
 }
 
 export default function EnablePushNotifications() {
+  const [enabled, setEnabled] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("");
 
-  async function enableNotifications() {
-    try {
-      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        setStatus("Push notifications are not supported in this browser.");
-        return;
-      }
+  useEffect(() => {
+    let cancelled = false;
 
-      if (!("Notification" in window)) {
-        setStatus("Browser notifications are unavailable.");
-        return;
+    async function checkSubscription() {
+      try {
+        if (
+          !("serviceWorker" in navigator) ||
+          !("PushManager" in window) ||
+          !("Notification" in window)
+        ) {
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.register("/sw.js");
+        await navigator.serviceWorker.ready;
+
+        const subscription =
+          await registration.pushManager.getSubscription();
+
+        if (!cancelled) {
+          setEnabled(
+            Notification.permission === "granted" &&
+            Boolean(subscription)
+          );
+        }
+
+        // Restore the subscription in MongoDB if it exists locally.
+        if (subscription && Notification.permission === "granted") {
+          const response = await fetch("/api/push/subscribe", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(subscription),
+          });
+
+          if (!response.ok) {
+            const result = await response.json().catch(() => ({}));
+            throw new Error(
+              result.message || "Could not sync your subscription."
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Checking push subscription failed:", error);
+
+        if (!cancelled) {
+          setStatus("Could not verify notification settings.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    checkSubscription();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function enableNotifications() {
+    setLoading(true);
+    setStatus("");
+
+    try {
+      if (
+        !("serviceWorker" in navigator) ||
+        !("PushManager" in window) ||
+        !("Notification" in window)
+      ) {
+        throw new Error("Push notifications are not supported here.");
       }
 
       if (Notification.permission === "denied") {
-        setStatus("Allow notifications in your browser settings.");
-        return;
+        throw new Error(
+          "Notifications are blocked. Allow them in your browser settings."
+        );
       }
 
       const permission = await Notification.requestPermission();
 
       if (permission !== "granted") {
-        setStatus("Notification permission was not granted.");
-        return;
+        throw new Error("Notification permission was not granted.");
       }
 
       const registration = await navigator.serviceWorker.register("/sw.js");
-
       await navigator.serviceWorker.ready;
 
       let subscription =
@@ -72,20 +140,33 @@ export default function EnablePushNotifications() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Subscription failed.");
+        throw new Error(
+          result.message || "Could not save your subscription."
+        );
       }
 
-      setStatus("Notifications enabled successfully.");
+      setEnabled(true);
+      setStatus("Mobile notifications are enabled.");
     } catch (error) {
-      console.error("Enable push error:", error);
+      console.error("Enabling notifications failed:", error);
       setStatus(error.message || "Could not enable notifications.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <div>
-      <button type="button" onClick={enableNotifications}>
-        Enable Mobile Notifications
+      <button
+        type="button"
+        onClick={enableNotifications}
+        disabled={loading || enabled}
+      >
+        {loading
+          ? "Checking..."
+          : enabled
+            ? "Notifications Enabled ✓"
+            : "Enable Mobile Notifications"}
       </button>
 
       {status && <p role="status">{status}</p>}
