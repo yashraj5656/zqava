@@ -2323,7 +2323,7 @@ img {
   .zqava-push-prompt {
     position: fixed;
     right: 20px;
-    bottom: 20px;
+    bottom: 100px;
     z-index: 9999;
     width: min(420px, calc(100vw - 32px));
     display: flex;
