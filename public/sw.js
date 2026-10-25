@@ -72,8 +72,8 @@ self.addEventListener("push", (event) => {
       data.title || "ZQAVA",
       {
         body: data.body || "You have a new notification.",
-        icon: "/icon-192.png",
-        badge: "/icon-192.png",
+        icon: "/zqavab.jpg",
+        badge: "/zqavab.jpg",
         data: {
           url: data.url || "/explore",
         },

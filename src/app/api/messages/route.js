@@ -392,7 +392,7 @@ export async function POST(request) {
     });
 
 
-    
+
     try {
       await sendPushToUser(receiverId, {
         title: "New message on ZQAVA",
@@ -400,7 +400,7 @@ export async function POST(request) {
           cleanText.length > 100
             ? `${cleanText.substring(0, 100)}...`
             : cleanText,
-        url: `/messages?bookingId=${booking._id}`,
+        url: `/messages/${booking._id}`,
         tag: `zqava-message-${booking._id}`,
       });
     } catch (error) {

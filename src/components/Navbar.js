@@ -151,8 +151,8 @@ export default function Navbar() {
         )
       )}
       <Link href="/bookings" onClick={closeMenu}>My Companion</Link>
-      <Link href="/companion-bookings" onClick={closeMenu}>My Bookings</Link>
-      <Link href="/companion-earnings" onClick={closeMenu}>My Earnings</Link>
+      <Link href="/companion-bookings" onClick={closeMenu}>Bookings</Link>
+      <Link href="/companion-earnings" onClick={closeMenu}>Earnings</Link>
       <Link href="/become-a-companion" onClick={closeMenu}>Become Companion</Link>
       <Link href="/earn" onClick={closeMenu}>
         How you earn
