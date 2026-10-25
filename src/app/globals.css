@@ -2396,8 +2396,8 @@ img {
     }
   
     .zqava-push-enable {
-      min-height: 34px;
-      padding: 0 10px;
+      padding: 9px;
+      font-size: 12px;
     }
   }
   
