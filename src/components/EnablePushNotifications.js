@@ -177,14 +177,14 @@ export default function EnablePushNotifications() {
   return (
     <aside className="zqava-push-prompt" role="region"
       aria-label="Notification settings">
-      <button
+      {/*<button
         type="button"
         className="zqava-push-close"
         onClick={dismiss}
         aria-label="Dismiss notification prompt"
       >
         ×
-      </button>
+      </button>*/}
 
       <div className="zqava-push-icon" aria-hidden="true">🔔</div>
 
