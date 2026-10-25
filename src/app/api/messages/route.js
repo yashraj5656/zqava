@@ -8,6 +8,7 @@ import User from "@/models/User";
 import Booking from "@/models/Booking";
 import Message from "@/models/Message";
 import Notification from "@/models/Notification";
+import { sendPushToUser } from "@/lib/webpush";
 
 export const runtime = "nodejs";
 
@@ -390,6 +391,22 @@ export async function POST(request) {
       read: false,
     });
 
+
+    
+    try {
+      await sendPushToUser(receiverId, {
+        title: "New message on ZQAVA",
+        body:
+          cleanText.length > 100
+            ? `${cleanText.substring(0, 100)}...`
+            : cleanText,
+        url: `/messages?bookingId=${booking._id}`,
+        tag: `zqava-message-${booking._id}`,
+      });
+    } catch (error) {
+      // A push failure must not undo a successfully sent message.
+      console.error("Could not send push notification:", error);
+    }
     /* =========================================================
    CREATE NOTIFICATION FOR RECEIVER
 ========================================================= */

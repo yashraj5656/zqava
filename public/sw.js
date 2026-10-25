@@ -54,3 +54,56 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+self.addEventListener("push", (event) => {
+  let data = {};
+
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = {
+      title: "New ZQAVA message",
+      body: event.data?.text() || "You have a new notification.",
+    };
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(
+      data.title || "ZQAVA",
+      {
+        body: data.body || "You have a new notification.",
+        icon: "/icon-192.png",
+        badge: "/icon-192.png",
+        data: {
+          url: data.url || "/explore",
+        },
+        tag: data.tag || "zqava-notification",
+      }
+    )
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const targetUrl = new URL(
+    event.notification.data?.url || "/explore",
+    self.location.origin
+  ).href;
+
+  event.waitUntil(
+    clients.matchAll({
+      type: "window",
+      includeUncontrolled: true,
+    }).then(async (windowClients) => {
+      for (const client of windowClients) {
+        if (client.url.startsWith(self.location.origin)) {
+          await client.navigate(targetUrl);
+          return client.focus();
+        }
+      }
+
+      return clients.openWindow(targetUrl);
+    })
+  );
+});
