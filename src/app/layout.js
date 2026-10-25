@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import InstagramRedirect from "@/components/InstagramRedirect";
+import EnablePushNotifications from "@/components/EnablePushNotifications";
 
 
 const inter = Inter({
@@ -70,7 +71,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/zqava.jpg" /></head>
       <body className={inter.className}>
       <Navbar/> <InstagramRedirect /><PWARegister />
-        {children}
+        {children}<EnablePushNotifications />
       <Footer/>  
       </body>
     </html>

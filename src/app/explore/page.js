@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import EnablePushNotifications from "@/components/EnablePushNotifications";
+
 import "./explore.css";
 
 export default function ExplorePage() {
@@ -784,7 +784,7 @@ useEffect(() => {
 
 </div>
 
-</section><EnablePushNotifications/>
+</section>
 
       </div>
     </main>

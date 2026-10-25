@@ -1,28 +1,69 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-function decodeVapidKey(base64String) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
+function decodeVapidKey(value) {
+  const padded = value + "=".repeat((4 - (value.length % 4)) % 4);
+  const base64 = padded.replace(/-/g, "+").replace(/_/g, "/");
 
-  const rawData = window.atob(base64);
-
-  return Uint8Array.from(rawData, (char) => char.charCodeAt(0));
+  return Uint8Array.from(
+    window.atob(base64),
+    (char) => char.charCodeAt(0)
+  );
 }
 
 export default function EnablePushNotifications() {
+  const [visible, setVisible] = useState(false);
   const [enabled, setEnabled] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const saveSubscription = useCallback(async (subscription) => {
+    const response = await fetch("/api/push/subscribe", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(subscription),
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.message || "Could not save subscription.");
+    }
+  }, []);
+
+  const registerDevice = useCallback(async () => {
+    const registration = await navigator.serviceWorker.register("/sw.js");
+    await navigator.serviceWorker.ready;
+
+    let subscription =
+      await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+      const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+
+      if (!publicKey) {
+        throw new Error("Push notification configuration is missing.");
+      }
+
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: decodeVapidKey(publicKey),
+      });
+    }
+
+    await saveSubscription(subscription);
+    setEnabled(true);
+    setVisible(false);
+    setMessage("");
+  }, [saveSubscription]);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function checkSubscription() {
+    async function initialize() {
       try {
         if (
           !("serviceWorker" in navigator) ||
@@ -35,141 +76,132 @@ export default function EnablePushNotifications() {
         const registration = await navigator.serviceWorker.register("/sw.js");
         await navigator.serviceWorker.ready;
 
-        const subscription =
+        let subscription =
           await registration.pushManager.getSubscription();
 
-        if (!cancelled) {
-          setEnabled(
-            Notification.permission === "granted" &&
-            Boolean(subscription)
-          );
+        // Permission was granted previously: restore the device automatically.
+        if (
+          Notification.permission === "granted" &&
+          !subscription
+        ) {
+          const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+
+          if (publicKey) {
+            subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: decodeVapidKey(publicKey),
+            });
+          }
         }
 
-        // Restore the subscription in MongoDB if it exists locally.
         if (subscription && Notification.permission === "granted") {
           const response = await fetch("/api/push/subscribe", {
             method: "POST",
             credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(subscription),
           });
 
-          if (!response.ok) {
-            const result = await response.json().catch(() => ({}));
-            throw new Error(
-              result.message || "Could not sync your subscription."
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Checking push subscription failed:", error);
+          if (response.status === 401) return;
 
-        if (!cancelled) {
-          setStatus("Could not verify notification settings.");
+          if (!response.ok) {
+            throw new Error("Could not sync notification settings.");
+          }
+
+          if (!cancelled) setEnabled(true);
+          return;
         }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
+
+        // Never repeatedly prompt people who blocked notifications.
+        if (Notification.permission === "denied") return;
+
+        // Don't show the custom prompt again if dismissed on this browser.
+        if (localStorage.getItem("zqava-push-dismissed") === "1") {
+          return;
         }
+
+        // Check login before showing the prompt.
+        const check = await fetch("/api/profile", {
+          credentials: "include",
+          cache: "no-store",
+        });
+
+        if (!check.ok) return;
+
+        if (!cancelled) setVisible(true);
+      } catch (error) {
+        console.error("Notification initialization failed:", error);
       }
     }
 
-    checkSubscription();
+    initialize();
 
     return () => {
       cancelled = true;
     };
   }, []);
 
-  async function enableNotifications() {
-    setLoading(true);
-    setStatus("");
+  async function enable() {
+    setBusy(true);
+    setMessage("");
 
     try {
-      if (
-        !("serviceWorker" in navigator) ||
-        !("PushManager" in window) ||
-        !("Notification" in window)
-      ) {
-        throw new Error("Push notifications are not supported here.");
-      }
-
       if (Notification.permission === "denied") {
-        throw new Error(
-          "Notifications are blocked. Allow them in your browser settings."
-        );
+        setMessage("Allow notifications in your browser settings.");
+        return;
       }
 
       const permission = await Notification.requestPermission();
 
       if (permission !== "granted") {
-        throw new Error("Notification permission was not granted.");
+        setMessage("Notifications weren't allowed. You can enable them later.");
+        return;
       }
 
-      const registration = await navigator.serviceWorker.register("/sw.js");
-      await navigator.serviceWorker.ready;
-
-      let subscription =
-        await registration.pushManager.getSubscription();
-
-      if (!subscription) {
-        const publicKey =
-          process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-
-        if (!publicKey) {
-          throw new Error("The public VAPID key is missing.");
-        }
-
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: decodeVapidKey(publicKey),
-        });
-      }
-
-      const response = await fetch("/api/push/subscribe", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(subscription),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.message || "Could not save your subscription."
-        );
-      }
-
-      setEnabled(true);
-      setStatus("Mobile notifications are enabled.");
+      await registerDevice();
     } catch (error) {
-      console.error("Enabling notifications failed:", error);
-      setStatus(error.message || "Could not enable notifications.");
+      console.error("Enable notifications failed:", error);
+      setMessage(error.message || "Could not enable notifications.");
     } finally {
-      setLoading(false);
+      setBusy(false);
     }
   }
 
+  function dismiss() {
+    localStorage.setItem("zqava-push-dismissed", "1");
+    setVisible(false);
+  }
+
+  if (enabled || !visible) return null;
+
   return (
-    <div>
+    <aside className="zqava-push-prompt" role="region"
+      aria-label="Notification settings">
       <button
         type="button"
-        onClick={enableNotifications}
-        disabled={loading || enabled}
+        className="zqava-push-close"
+        onClick={dismiss}
+        aria-label="Dismiss notification prompt"
       >
-        {loading
-          ? "Checking..."
-          : enabled
-            ? "Notifications Enabled ✓"
-            : "Enable Mobile Notifications"}
+        ×
       </button>
 
-      {status && <p role="status">{status}</p>}
-    </div>
+      <div className="zqava-push-icon" aria-hidden="true">🔔</div>
+
+      <div className="zqava-push-copy">
+        <strong>Never miss a message</strong>
+        <p>Enable notifications to know when someone messages you on ZQAVA.</p>
+        {message && <p role="status">{message}</p>}
+      </div>
+
+      <button
+        type="button"
+        className="zqava-push-enable"
+        onClick={enable}
+        disabled={busy}
+      >
+        {busy ? "Enabling..." : "Enable"}
+      </button>
+    </aside>
   );
 }
