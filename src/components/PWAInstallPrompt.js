@@ -144,7 +144,7 @@ if (installed) {
       aria-label="Install ZQAVA app"
     >
       <div className="zqava-install-icon" aria-hidden="true">
-        <span>Z</span>
+      <img src="/zqavab.jpg" alt="ZQAVA" />
       </div>
 
       <div className="zqava-install-copy">
