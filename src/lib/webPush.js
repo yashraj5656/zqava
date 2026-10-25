@@ -1,7 +1,7 @@
 
 import webpush from "web-push";
 
-import connectDB from "@/lib/mongodb";
+import { connectDB } from "@/lib/mongodb";
 import PushSubscription from "@/models/PushSubscription";
 
 const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
