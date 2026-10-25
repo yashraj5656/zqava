@@ -2388,7 +2388,7 @@ img {
   @media (max-width: 480px) {
     .zqava-push-prompt {
       right: 12px;
-      bottom: 12px;
+      bottom: 100px;
       width: calc(100vw - 24px);
       padding: 16px 12px;
       gap: 9px;
