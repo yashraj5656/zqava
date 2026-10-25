@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import InstagramRedirect from "@/components/InstagramRedirect";
 import EnablePushNotifications from "@/components/EnablePushNotifications";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 
 const inter = Inter({
@@ -68,10 +69,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en"><head>
               {/* Favicon */}
-        <link rel="icon" href="/zqava.jpg" /></head>
+        <link rel="icon" href="/zqavab.jpg" /></head>
       <body className={inter.className}>
       <Navbar/> <InstagramRedirect /><PWARegister />
-        {children}<EnablePushNotifications />
+        {children}<EnablePushNotifications /><PWAInstallPrompt />
       <Footer/>  
       </body>
     </html>
