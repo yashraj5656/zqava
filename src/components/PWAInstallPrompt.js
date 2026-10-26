@@ -8,6 +8,7 @@ const DISMISS_KEY = "zqava-pwa-dismissed";
 
 export default function PWAInstallPrompt() {
   const [visible, setVisible] = useState(false);
+  const [visibleu, setVisibleu] = useState(false);
   const [installed, setInstalled] = useState(false);
   const [installEvent, setInstallEvent] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -128,12 +129,16 @@ export default function PWAInstallPrompt() {
 
   function dismiss() {
     localStorage.setItem(DISMISS_KEY, "1");
-    setVisible(false);
+    setVisible(true);
     setIosInstructions(false);
   }
 
+  function dismissu() {
+    setVisibleu(true);
+  }
+
  // TEMPORARY TEST: force the prompt to appear
-if (installed) {
+if (installed || visibleu) {
     return null;
   }
 
@@ -143,6 +148,16 @@ if (installed) {
       role="region"
       aria-label="Install ZQAVA app"
     >
+      {iosInstructions && (
+        <button
+          type="button"
+          className="zqava-install-dismiss"
+          onClick={dismissu}
+          aria-label="Dismiss install prompt"
+        >
+          ×
+        </button>
+        )}
       <div className="zqava-install-icon" aria-hidden="true">
       <img src="/zqavab.jpg" alt="ZQAVA" />
       </div>
@@ -176,14 +191,10 @@ if (installed) {
           onClick={installApp}
           disabled={busy}
         >
-          {busy
-            ? "Opening..."
-            : iosInstructions
-              ? "Got it"
-              : "Install"}
+          {busy ? "Opening..." : iosInstructions ? "Got it" : "Install"}
         </button>
 
-       {/* <button
+{/*<button
           type="button"
           className="zqava-install-dismiss"
           onClick={dismiss}
