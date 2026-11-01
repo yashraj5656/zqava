@@ -1124,7 +1124,7 @@ const handleProfilePhotoChange = async (event) => {
           <div className="companion-profile-header-actions">
 
             <Link
-              href="/companion-bookings"
+              href="/companion/dashboard"
               className="companion-profile-secondary-btn"
             >
               My Bookings
