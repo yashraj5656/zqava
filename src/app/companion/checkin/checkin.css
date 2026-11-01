@@ -1,0 +1,423 @@
+/* =========================================================
+   ZQAVA — COMPANION CHECK-IN
+========================================================= */
+
+.companion-checkin-page {
+    background:
+      radial-gradient(circle at 0% 0%, #f4efff 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, #f2eaff 0%, transparent 40%),
+      #fafafd;
+    min-height: 100vh;
+    padding: 40px 0 100px;
+  }
+  
+  .companion-checkin-container {
+    width: min(520px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+  
+  .companion-checkin-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #7444ff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 22px;
+  }
+  
+  .companion-checkin-back:hover {
+    color: #6031e8;
+  }
+  
+  /* =========================================================
+     CARD
+  ========================================================= */
+  
+  .companion-checkin-card {
+    background: #ffffff;
+    border: 1px solid #eeeef2;
+    border-radius: 22px;
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(23, 23, 29, 0.08);
+  }
+  
+  .companion-checkin-icon {
+    font-size: 42px;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+  
+  .companion-checkin-card h1 {
+    font-family: "Manrope", sans-serif;
+    font-size: 24px;
+    letter-spacing: -0.6px;
+    margin: 0 0 8px;
+    color: #17171d;
+  }
+  
+  .companion-checkin-card > p {
+    color: #777780;
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 0 0 22px;
+  }
+  
+  /* =========================================================
+     FORM
+  ========================================================= */
+  
+  .companion-checkin-form {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  
+  .companion-checkin-form input {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border: 1px solid #e4e4e9;
+    border-radius: 11px;
+    background: #fafafd;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-align: center;
+    color: #17171d;
+    text-transform: uppercase;
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  
+  .companion-checkin-form input::placeholder {
+    color: #b6b6bf;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+  }
+  
+  .companion-checkin-form input:focus {
+    outline: none;
+    border-color: #b79cff;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(116, 68, 255, 0.1);
+  }
+  
+  .companion-checkin-form input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .companion-checkin-form button {
+    flex-shrink: 0;
+    padding: 14px 22px;
+    border-radius: 11px;
+    background: #7444ff;
+    color: #ffffff;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      transform 0.15s ease,
+      opacity 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  .companion-checkin-form button:hover:not(:disabled) {
+    background: #6031e8;
+    transform: translateY(-1px);
+  }
+  
+  .companion-checkin-form button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  .companion-checkin-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* =========================================================
+     FEEDBACK
+  ========================================================= */
+  
+  .companion-checkin-error {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: #fdecec;
+    color: #c43c3c;
+    border: 1px solid #f8cdcd;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: left;
+  }
+  
+  .companion-checkin-result {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 14px;
+    text-align: center;
+    animation: companion-checkin-in 0.25s ease;
+  }
+  
+  @keyframes companion-checkin-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .companion-checkin-result.success {
+    background: #e5f7ee;
+    color: #168658;
+    border: 1px solid #c7eeda;
+  }
+  
+  .companion-checkin-result.warn {
+    background: #fff4d4;
+    color: #9b7511;
+    border: 1px solid #fce9b3;
+  }
+  
+  .companion-checkin-result.error {
+    background: #fdecec;
+    color: #c43c3c;
+    border: 1px solid #f8cdcd;
+  }
+  
+  .companion-checkin-result-icon {
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  
+  .companion-checkin-result h3 {
+    margin: 0 0 6px;
+    font-family: "Manrope", sans-serif;
+    font-size: 17px;
+    letter-spacing: -0.3px;
+    word-break: break-word;
+  }
+  
+  .companion-checkin-result p {
+    margin: 0 0 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+  
+  .companion-checkin-result small {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.8;
+    word-break: break-all;
+  }
+  
+  /* =========================================================
+     RESPONSIVE — TABLET (≤600px)
+  ========================================================= */
+  
+  @media (max-width: 600px) {
+    .companion-checkin-page {
+      padding: 24px 0 70px;
+    }
+  
+    .companion-checkin-container {
+      width: calc(100% - 30px);
+    }
+  
+    .companion-checkin-card {
+      padding: 28px 20px;
+      border-radius: 18px;
+    }
+  
+    .companion-checkin-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+  
+    .companion-checkin-card h1 {
+      font-size: 22px;
+    }
+  
+    .companion-checkin-card > p {
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+  
+    /* Stack input + button vertically */
+    .companion-checkin-form {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .companion-checkin-form input {
+      width: 100%;
+      padding: 14px 14px;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+  
+    .companion-checkin-form button {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 14px;
+    }
+  
+    .companion-checkin-result {
+      padding: 18px 16px;
+    }
+  
+    .companion-checkin-result h3 {
+      font-size: 16px;
+    }
+  }
+  
+  /* =========================================================
+     RESPONSIVE — SMALL PHONE (≤380px)
+  ========================================================= */
+  
+  @media (max-width: 380px) {
+    .companion-checkin-container {
+      width: calc(100% - 24px);
+    }
+  
+    .companion-checkin-card {
+      padding: 24px 16px;
+    }
+  
+    .companion-checkin-card h1 {
+      font-size: 20px;
+    }
+  
+    .companion-checkin-card > p {
+      font-size: 12px;
+    }
+  
+    .companion-checkin-form input {
+      padding: 12px 12px;
+      font-size: 14px;
+      letter-spacing: 0.8px;
+    }
+  
+    .companion-checkin-form button {
+      padding: 13px 14px;
+      font-size: 13px;
+    }
+  
+    .companion-checkin-result {
+      padding: 16px 14px;
+    }
+  }
+  
+  /* =========================================================
+     ACCESSIBILITY
+  ========================================================= */
+  
+  .companion-checkin-container a:focus-visible,
+  .companion-checkin-container button:focus-visible,
+  .companion-checkin-container input:focus-visible {
+    outline: 3px solid rgba(116, 68, 255, 0.22);
+    outline-offset: 3px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .companion-checkin-container *,
+    .companion-checkin-container *::before,
+    .companion-checkin-container *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  
+    .companion-checkin-result {
+      animation: none;
+    }
+  }
+  /* Fast path button */
+.companion-checkin-direct {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  margin: 4px 0 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7444ff 0%, #6031e8 100%);
+  color: #ffffff;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+  box-shadow: 0 12px 28px rgba(116, 68, 255, 0.25);
+}
+
+.companion-checkin-direct:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(116, 68, 255, 0.32);
+}
+
+.companion-checkin-direct:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Divider */
+.companion-checkin-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: #9999a3;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.companion-checkin-divider::before,
+.companion-checkin-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eeeef2;
+}
+
+/* Back to dashboard button */
+.companion-checkin-done {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border-radius: 9px;
+  background: #17171d;
+  color: #ffffff;
+  border: none;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.companion-checkin-done:hover {
+  background: #7444ff;
+}

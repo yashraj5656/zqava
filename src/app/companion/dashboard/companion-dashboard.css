@@ -1251,3 +1251,7 @@
       animation: none;
     }
   }
+  .booking-status.checked_in {
+    background: #e5f7ee;
+    color: #168658;
+  }

@@ -156,6 +156,7 @@ export default function Navbar() {
       <Link href="/my-tickets" onClick={closeMenu}>My Tickets</Link>
       <Link href="/host" onClick={closeMenu}>Host Dashboard</Link>
       <Link href="/companion/dashboard" onClick={closeMenu}>Companion Dashboard</Link>
+      <Link href="/companion/checkin" onClick={closeMenu}>Check in</Link>
       <Link href="/bookings" onClick={closeMenu}>My Companion</Link>
       <Link href="/companion-bookings" onClick={closeMenu}>Bookings</Link>
       <Link href="/companion-earnings" onClick={closeMenu}>Earnings</Link>

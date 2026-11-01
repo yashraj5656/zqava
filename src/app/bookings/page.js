@@ -2,539 +2,224 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+
 import "./bookings.css";
 
-export default function BookingsPage() {
+export default function MyBookingsPage() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
-
-
-  
-
-
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    async function loadBookings() {
+    async function load() {
       try {
         setLoading(true);
         setError("");
 
-        const response = await fetch(
-          "/api/bookings?type=customer",
-          {
-            cache: "no-store",
-          }
-        );
+        const res = await fetch("/api/bookings?type=customer", {
+          cache: "no-store",
+        });
 
-        const data = await response.json();
-
-        if (response.status === 401) {
-          window.location.href = "/signup";
+        if (res.status === 401) {
+          window.location.href = "/login";
           return;
         }
 
-        if (!response.ok) {
-          throw new Error(
-            data.message || "Failed to load bookings."
-          );
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to load bookings.");
         }
 
         setBookings(data.bookings || []);
-      } catch (error) {
-        console.error("BOOKINGS ERROR:", error);
-
-        setError(
-          error.message ||
-            "Unable to load your bookings."
-        );
+      } catch (e) {
+        setError(e.message || "Unable to load bookings.");
       } finally {
         setLoading(false);
       }
     }
-
-    loadBookings();
+    load();
   }, []);
 
-
-  /* =========================================
-     FILTER BOOKINGS
-  ========================================= */
-
-  const filteredBookings = useMemo(() => {
-    if (activeFilter === "all") {
-      return bookings;
-    }
-
-    return bookings.filter(
-      (booking) => booking.status === activeFilter
-    );
-  }, [bookings, activeFilter]);
-
-
-  /* =========================================
-     COUNTS
-  ========================================= */
-
-  const counts = useMemo(() => {
-    return {
-      all: bookings.length,
-
-      pending: bookings.filter(
-        (booking) =>
-          booking.status === "pending"
-      ).length,
-
-      confirmed: bookings.filter(
-        (booking) =>
-          booking.status === "confirmed"
-      ).length,
-
-      completed: bookings.filter(
-        (booking) =>
-          booking.status === "completed"
-      ).length,
-
-      cancelled:
-        bookings.filter(
-          (booking) =>
-            booking.status === "cancelled" ||
-            booking.status === "rejected"
-        ).length,
-    };
-  }, [bookings]);
-
-
-  /* =========================================
-     FORMAT DATE
-  ========================================= */
-
-  function formatDate(date) {
-    if (!date) {
-      return "Date not available";
-    }
-
-    const parsed = new Date(`${date}T00:00:00`);
-
-    if (Number.isNaN(parsed.getTime())) {
-      return date;
-    }
-
-    return parsed.toLocaleDateString(
-      "en-IN",
-      {
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }
-    );
-  }
-
-
-  /* =========================================
-     FORMAT STATUS
-  ========================================= */
-
-  function getStatusLabel(status) {
-    const labels = {
-      pending: "Pending",
-      confirmed: "Confirmed",
-      completed: "Completed",
-      cancelled: "Cancelled",
-      rejected: "Rejected",
-    };
-
-    return labels[status] || status;
-  }
-
-
-  /* =========================================
-     LOADING
-  ========================================= */
+  const filtered = useMemo(() => {
+    if (filter === "all") return bookings;
+    return bookings.filter((b) => b.status === filter);
+  }, [bookings, filter]);
 
   if (loading) {
     return (
       <main className="my-bookings-page">
-
-        <section className="bookings-loading-page">
-
-          <div className="bookings-spinner" />
-
-          <p>
-            Loading your bookings...
-          </p>
-
-        </section>
-
+        <div className="my-bookings-loading">
+          <div className="booking-page-spinner" />
+          <p>Loading your bookings...</p>
+        </div>
       </main>
     );
   }
 
-
-  /* =========================================
-     PAGE
-  ========================================= */
-
   return (
     <main className="my-bookings-page">
+      <div className="my-bookings-container">
+        <div className="my-bookings-head">
 
-      {/* =====================================
-          HERO
-      ===================================== */}
 
-      <section className="bookings-hero">
+          <span className="my-bookings-eyebrow">YOUR BOOKINGS</span>
+          <h1>My bookings</h1>
+          <p>
+            Show the ticket code to your companion when you meet.
+          </p>
+        </div>
 
-        <div className="bookings-container">
+        {error && <div className="my-bookings-error">{error}</div>}
 
-          <div className="bookings-hero-content">
+        <div className="my-bookings-filters">
+          {[
+            ["all", "All"],
+            ["pending", "Pending"],
+            ["confirmed", "Confirmed"],
+            ["checked_in", "Checked in"],
+            ["completed", "Completed"],
+            ["cancelled", "Cancelled"],
+          ].map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              className={`my-bookings-filter ${
+                filter === key ? "active" : ""
+              }`}
+              onClick={() => setFilter(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
-            <span className="bookings-eyebrow">
-              YOUR ZQAVA
-            </span>
-
-            <h1>
-              My bookings
-            </h1>
-
+        {filtered.length === 0 ? (
+          <div className="my-bookings-empty">
+            <div className="my-bookings-empty-icon">📅</div>
+            <h2>No bookings in this view</h2>
             <p>
-              Keep track of your companion experiences,
-              upcoming plans, and booking history.
+              Book a companion and your tickets will show up here.
             </p>
-
+            <Link href="/explore" className="my-bookings-primary-btn">
+              Explore companions
+            </Link>
           </div>
+        ) : (
+          <div className="my-bookings-list">
+            {filtered.map((booking) => {
+              const companion = booking.companion || {};
+              const name =
+                `${companion.firstName || ""} ${
+                  companion.lastName || ""
+                }`.trim() || "Companion";
 
-          <Link
-            href="/explore"
-            className="find-companion-button"
-          >
-            Find a companion
-            <span>→</span>
-          </Link>
+              const hasCode = booking.checkinCode && booking.status !== "cancelled";
+              const dateObj = new Date(`${booking.date}T00:00:00`);
 
-        </div>
+              return (
+                <article key={booking._id} className="my-booking-card">
+                  <div className="my-booking-header">
+                    <div className="my-booking-person">
+                      <div className="my-booking-avatar">
+                        {companion.profilePhoto ? (
+                          <img
+                            src={companion.profilePhoto}
+                            alt={name}
+                          />
+                        ) : (
+                          name.charAt(0).toUpperCase()
+                        )}
+                      </div>
 
-      </section>
+                      <div>
+                        <h2>{name}</h2>
+                        {companion.city && (
+                          <span>{companion.city}</span>
+                        )}
+                      </div>
+                    </div>
 
-
-      {/* =====================================
-          CONTENT
-      ===================================== */}
-
-      <section className="bookings-content">
-
-        <div className="bookings-container">
-
-
-          {/* Error */}
-
-          {error && (
-            <div className="bookings-error">
-              {error}
-            </div>
-          )}
-
-
-          {/* =================================
-              FILTERS
-          ================================= */}
-
-          <div className="booking-filters">
-
-            <button
-              className={
-                activeFilter === "all"
-                  ? "active"
-                  : ""
-              }
-              onClick={() =>
-                setActiveFilter("all")
-              }
-            >
-              All
-              <span>{counts.all}</span>
-            </button>
-
-
-            <button
-              className={
-                activeFilter === "pending"
-                  ? "active"
-                  : ""
-              }
-              onClick={() =>
-                setActiveFilter("pending")
-              }
-            >
-              Pending
-              <span>{counts.pending}</span>
-            </button>
-
-
-            <button
-              className={
-                activeFilter === "confirmed"
-                  ? "active"
-                  : ""
-              }
-              onClick={() =>
-                setActiveFilter("confirmed")
-              }
-            >
-              Upcoming
-              <span>{counts.confirmed}</span>
-            </button>
-
-
-            <button
-              className={
-                activeFilter === "completed"
-                  ? "active"
-                  : ""
-              }
-              onClick={() =>
-                setActiveFilter("completed")
-              }
-            >
-              Completed
-              <span>{counts.completed}</span>
-            </button>
-
-
-            <button
-              className={
-                activeFilter === "cancelled"
-                  ? "active"
-                  : ""
-              }
-              onClick={() =>
-                setActiveFilter("cancelled")
-              }
-            >
-              Cancelled
-              <span>{counts.cancelled}</span>
-            </button>
-
-          </div>
-
-
-          {/* =================================
-              BOOKINGS
-          ================================= */}
-
-          {filteredBookings.length === 0 ? (
-
-            <div className="no-bookings">
-
-              <div className="no-bookings-icon">
-                ♡
-              </div>
-
-              <h2>
-                {bookings.length === 0
-                  ? "No bookings yet"
-                  : "No bookings found"}
-              </h2>
-
-              <p>
-                {bookings.length === 0
-                  ? "Your bookings will appear here once you book a companion."
-                  : "There are no bookings in this category."}
-              </p>
-
-              {bookings.length === 0 && (
-                <Link
-                  href="/explore"
-                  className="empty-explore-button"
-                >
-                  Explore companions
-                  <span>→</span>
-                </Link>
-              )}
-
-            </div>
-
-          ) : (
-
-            <div className="bookings-list">
-
-              {filteredBookings.map(
-                (booking) => {
-
-                  const companion =
-                    booking.companion;
-
-                  const companionProfile =
-                    companion?.companionProfile;
-
-                  const companionName =
-                    companionProfile?.displayName ||
-                    `${companion?.firstName || ""} ${
-                      companion?.lastName || ""
-                    }`.trim() ||
-                    "Companion";
-
-                  const companionImage =
-                    companionProfile?.profilePhoto ||
-                    "";
-
-                  return (
-                    <article
-                      className="customer-booking-card"
-                      key={booking._id}
+                    <span
+                      className={`my-booking-status ${booking.status}`}
                     >
+                      {booking.status === "pending" && "Pending"}
+                      {booking.status === "confirmed" && "Confirmed"}
+                      {booking.status === "checked_in" && "Checked in"}
+                      {booking.status === "completed" && "Completed"}
+                      {booking.status === "rejected" && "Declined"}
+                      {booking.status === "cancelled" && "Cancelled"}
+                    </span>
+                  </div>
 
-                      {/* Companion */}
+                  <div className="my-booking-details">
+                    <div>
+                      <span>DATE</span>
+                      <strong>
+                        {dateObj.toLocaleDateString("en-IN", {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </strong>
+                    </div>
+                    <div>
+                      <span>TIME</span>
+                      <strong>{booking.time}</strong>
+                    </div>
+                    <div>
+                      <span>DURATION</span>
+                      <strong>
+                        {booking.duration}{" "}
+                        {booking.duration === 1 ? "hour" : "hours"}
+                      </strong>
+                    </div>
+                    <div>
+                      <span>TOTAL</span>
+                      <strong>
+                        ₹{Number(booking.total || 0).toLocaleString("en-IN")}
+                      </strong>
+                    </div>
+                  </div>
 
-                      <div className="customer-booking-top">
+                  {hasCode && (
+                    <div className="my-booking-ticket">
+                      <div className="my-booking-ticket-label">
+                        SHOW AT THE DOOR
+                      </div>
+                      <div className="my-booking-ticket-code">
+                        {booking.checkinCode}
+                      </div>
+                      <p className="my-booking-ticket-hint">
+                        Show this code to {name} when you meet. They&apos;ll
+                        check you in.
+                      </p>
+                    </div>
+                  )}
 
-                        <div className="customer-companion">
+                  <div className="my-booking-footer">
+                    <span className="my-booking-id">
+                      Booking #{booking._id.slice(-8).toUpperCase()}
+                    </span>
 
-                          {companionImage ? (
-                            <img
-                              src={companionImage}
-                              alt={companionName}
-                            />
-                          ) : (
-                            <div className="customer-companion-avatar">
-                              {companionName
-                                .charAt(0)
-                                .toUpperCase()}
-                            </div>
-                          )}
-
-                          <div>
-
-                            <span>
-                              COMPANION
-                            </span>
-
-                            <h2>
-                              {companionName}
-                            </h2>
-
-                          </div>
-
-                        </div>
-
-
-                        <span
-                          className={`customer-booking-status ${booking.status}`}
+                    {booking.paymentStatus === "paid" &&
+                      booking.status !== "cancelled" &&
+                      booking.status !== "rejected" && (
+                        <Link
+                          href={`/messages/${booking._id}`}
+                          className="my-booking-chat-btn"
                         >
-                          {getStatusLabel(
-                            booking.status
-                          )}
-                        </span>
-
-                      </div>
-
-
-                      {/* Details */}
-
-                      <div className="customer-booking-details">
-
-                        <div>
-                          <span>
-                            DATE
-                          </span>
-
-                          <strong>
-                            {formatDate(
-                              booking.date
-                            )}
-                          </strong>
-                        </div>
-
-
-                        <div>
-                          <span>
-                            TIME
-                          </span>
-
-                          <strong>
-                            {booking.time}
-                          </strong>
-                        </div>
-
-
-                        <div>
-                          <span>
-                            DURATION
-                          </span>
-
-                          <strong>
-                            {booking.duration}{" "}
-                            {booking.duration === 1
-                              ? "hour"
-                              : "hours"}
-                          </strong>
-                        </div>
-
-
-                        <div>
-                          <span>
-                            TOTAL
-                          </span>
-
-                          <strong>
-                            ₹{booking.total}
-                          </strong>
-                        </div>
-
-                      </div>
-
-
-                      {/* Footer */}
-
-                      <div className="customer-booking-footer">
-
-                        <div>
-
-                          <span className="booking-reference">
-                            Booking ID
-                          </span>
-
-                          <strong>
-                            #
-                            {String(
-                              booking._id
-                            ).slice(-8)}
-                          </strong>
-
-                        </div>
-
-
-                        <div className="customer-booking-actions">
-
-                        {booking.paymentStatus === "paid" &&
-  booking.status !== "cancelled" &&
-  booking.status !== "rejected" && (
-    <Link
-      href={`/messages/${booking._id}`}
-      className="booking-message-button"
-    >
-      Message Companion
-    </Link>
-  )}
-
-                        </div>
-
-                      </div>
-
-                    </article>
-                  );
-                }
-              )}
-
-            </div>
-
-          )}
-
-        </div>
-
-      </section>
-
+                          Open chat
+                        </Link>
+                      )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </main>
   );
 }

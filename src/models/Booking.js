@@ -6,137 +6,64 @@ const BookingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
 
     companion: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
-
-    date: {
-      type: String,
-      required: true,
-    },
-
-    time: {
-      type: String,
-      required: true,
-    },
-
-    duration: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-
-    hourlyRate: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    subtotal: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    serviceFee: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-
-    total: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    message: {
-      type: String,
-      default: "",
-      maxlength: 1000,
-    },
-
-    /*
-     * Razorpay handles the actual payment methods.
-     * The actual method can be recorded from Razorpay later.
-     */
-    paymentMethod: {
-      type: String,
-      default: "razorpay",
-    },
-
-    razorpayOrderId: {
-      type: String,
-      default: "",
       index: true,
     },
 
-    razorpayPaymentId: {
-      type: String,
-      default: "",
-      index: true,
-    },
+    date: { type: String, required: true },
+    time: { type: String, required: true },
+    duration: { type: Number, required: true, min: 1 },
 
+    message: { type: String, default: "" },
+
+    hourlyRate: { type: Number, required: true },
+    subtotal: { type: Number, required: true },
+    serviceFee: { type: Number, default: 0 },
+    total: { type: Number, required: true },
+
+    paymentMethod: { type: String, default: "upi" },
     paymentStatus: {
       type: String,
-      enum: [
-        "pending",
-        "paid",
-        "failed",
-        "refunded",
-      ],
+      enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
     },
 
-    payoutPaid: {
-      type: Boolean,
-      default: false,
-    },
-    
+    razorpayOrderId: { type: String, default: "" },
+    razorpayPaymentId: { type: String, default: "" },
+
     status: {
       type: String,
       enum: [
         "pending",
         "confirmed",
+        "checked_in",
         "completed",
-        "cancelled",
         "rejected",
+        "cancelled",
       ],
       default: "pending",
     },
 
+    /* NEW — companion check-in system */
+    checkinCode: {
+      type: String,
+      default: "",
+      index: true,
+    },
+    checkedInAt: { type: Date, default: null },
+    completedAt: { type: Date, default: null },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-/*
- * Prevent the same Razorpay payment/order from
- * being attached to multiple bookings.
- *
- * sparse=true allows older bookings that don't
- * have these fields yet.
- */
-BookingSchema.index(
-  { razorpayOrderId: 1 },
-  {
-    unique: true,
-    sparse: true,
-  }
-);
-
-BookingSchema.index(
-  { razorpayPaymentId: 1 },
-  {
-    unique: true,
-    sparse: true,
-  }
-);
+BookingSchema.index({ companion: 1, date: 1, time: 1 });
+BookingSchema.index({ checkinCode: 1 });
 
 export default mongoose.models.Booking ||
   mongoose.model("Booking", BookingSchema);

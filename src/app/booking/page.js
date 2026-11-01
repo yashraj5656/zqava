@@ -539,7 +539,7 @@ const subtotal = hourlyRate * duration;
                 href="/bookings"
                 className="success-primary-button"
               >
-                View my bookings
+                View bookings
               </Link>
   
               <Link

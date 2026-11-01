@@ -169,34 +169,31 @@ export default function CompanionDashboardClient() {
     try {
       setActionLoading(`${bookingId}-${status}`);
       setBookingsError("");
-
+  
       const response = await fetch(`/api/bookings/${bookingId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-
+  
       if (response.status === 401) {
         window.location.href = "/login";
         return;
       }
-
-      const data = await response.json();
-
-      if (!response.ok) {
+  
+      const data = await safeJson(response);
+  
+      if (!response.ok || !data.success) {
         throw new Error(data.message || "Failed to update booking.");
       }
-
+  
       setBookings((current) =>
         current.map((b) =>
-          b._id === bookingId
-            ? { ...b, status: data.booking.status }
-            : b
+          b._id === bookingId ? { ...b, status: data.booking.status } : b
         )
       );
-
-      // Refresh earnings so totals stay in sync after "completed"
-      if (status === "completed") {
+  
+      if (status === "completed" || status === "checked_in") {
         loadEarnings();
       }
     } catch (error) {
@@ -220,6 +217,9 @@ export default function CompanionDashboardClient() {
   ).length;
   const confirmedCount = bookings.filter(
     (b) => b.status === "confirmed"
+  ).length;
+  const checkedInCount = bookings.filter(
+    (b) => b.status === "checked_in"
   ).length;
   const completedCount = bookings.filter(
     (b) => b.status === "completed"
@@ -362,6 +362,7 @@ export default function CompanionDashboardClient() {
               ["all", "All"],
               ["pending", "Pending"],
               ["confirmed", "Confirmed"],
+              ["checked_in", "Checked in"],
               ["completed", "Completed"],
               ["rejected", "Declined"],
               ["cancelled", "Cancelled"],
@@ -439,15 +440,14 @@ export default function CompanionDashboardClient() {
                         </div>
                       </div>
 
-                      <span
-                        className={`booking-status ${booking.status}`}
-                      >
-                        {booking.status === "pending" && "Pending"}
-                        {booking.status === "confirmed" && "Confirmed"}
-                        {booking.status === "completed" && "Completed"}
-                        {booking.status === "rejected" && "Declined"}
-                        {booking.status === "cancelled" && "Cancelled"}
-                      </span>
+                      <span className={`booking-status ${booking.status}`}>
+  {booking.status === "pending" && "Pending"}
+  {booking.status === "confirmed" && "Confirmed"}
+  {booking.status === "checked_in" && "Checked in"}
+  {booking.status === "completed" && "Completed"}
+  {booking.status === "rejected" && "Declined"}
+  {booking.status === "cancelled" && "Cancelled"}
+</span>
                     </div>
 
                     <div className="booking-details-grid">
@@ -544,27 +544,34 @@ export default function CompanionDashboardClient() {
                           </>
                         )}
 
-                        {isConfirmed && bookingEnded && (
-                          <button
-                            type="button"
-                            className="booking-btn primary"
-                            disabled={
-                              actionLoading ===
-                              `${booking._id}-completed`
-                            }
-                            onClick={() =>
-                              updateBooking(
-                                booking._id,
-                                "completed"
-                              )
-                            }
-                          >
-                            {actionLoading ===
-                            `${booking._id}-completed`
-                              ? "Updating..."
-                              : "Mark as completed"}
-                          </button>
-                        )}
+
+{/* CONFIRMED → go to the check-in page */}
+{isConfirmed && (
+  <Link
+    href={`/companion/checkin?bookingId=${booking._id}`}
+    className="booking-btn primary"
+  >
+    Check in guest
+  </Link>
+)}
+
+{/* CHECKED-IN → COMPLETE */}
+{booking.status === "checked_in" && (
+  <button
+    type="button"
+    className="booking-btn primary"
+    disabled={
+      actionLoading === `${booking._id}-completed`
+    }
+    onClick={() =>
+      updateBooking(booking._id, "completed")
+    }
+  >
+    {actionLoading === `${booking._id}-completed`
+      ? "Completing..."
+      : "Mark as completed"}
+  </button>
+)}
                       </div>
                     </div>
                   </article>

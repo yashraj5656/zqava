@@ -39,14 +39,14 @@ export default function CheckinClient({ partyId }) {
 
   return (
     <div className="checkin-container">
-      <Link href={`/parties/${partyId}`} className="checkin-back">
+     {/* <Link href={`/parties/${partyId}`} className="checkin-back">
         ← Back to party
-      </Link>
+      </Link>*/}
 
       <div className="checkin-card">
         <div className="checkin-icon">🎟️</div>
         <h1>Check in a guest</h1>
-        <p>Enter or scan the ticket code from the guest's phone.</p>
+        <p>Enter the ticket code from the guest's phone.</p>
 
         <form onSubmit={handleVerify} className="checkin-form">
           <input

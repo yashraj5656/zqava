@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
+import mongoose from "mongoose";
 
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Booking from "@/models/Booking";
+
+export const runtime = "nodejs";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -12,19 +15,86 @@ async function getAuthenticatedUserId() {
   const cookieStore = await cookies();
   const token = cookieStore.get("zqava_session")?.value;
 
-  if (!token) return null;
+  if (!token || !JWT_SECRET) return null;
 
   try {
     const { payload } = await jwtVerify(
       token,
       new TextEncoder().encode(JWT_SECRET)
     );
-
     return payload.userId || payload.id || null;
   } catch {
     return null;
   }
 }
+
+/* =========================================================
+   GET — fetch a single booking (used by check-in page)
+========================================================= */
+export async function GET(_request, { params }) {
+  try {
+    const userId = await getAuthenticatedUserId();
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, message: "You must be logged in." },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, message: "Booking not found." },
+        { status: 404 }
+      );
+    }
+
+    await connectDB();
+
+    const booking = await Booking.findById(id)
+      .populate("customer", "firstName lastName profilePhoto city")
+      .populate("companion", "firstName lastName profilePhoto")
+      .lean();
+
+    if (!booking) {
+      return NextResponse.json(
+        { success: false, message: "Booking not found." },
+        { status: 404 }
+      );
+    }
+
+    const isCustomer = String(booking.customer?._id) === String(userId);
+    const isCompanion = String(booking.companion?._id) === String(userId);
+
+    if (!isCustomer && !isCompanion) {
+      return NextResponse.json(
+        { success: false, message: "You do not have access to this booking." },
+        { status: 403 }
+      );
+    }
+
+    return NextResponse.json({ success: true, booking });
+  } catch (err) {
+    console.error("GET /api/bookings/[id]:", err);
+    return NextResponse.json(
+      { success: false, message: "Failed to load booking." },
+      { status: 500 }
+    );
+  }
+}
+
+/* =========================================================
+   PATCH — update booking status
+========================================================= */
+const ALLOWED_STATUSES = [
+  "confirmed",
+  "rejected",
+  "checked_in",
+  "completed",
+  "cancelled",
+];
 
 export async function PATCH(request, { params }) {
   try {
@@ -32,19 +102,26 @@ export async function PATCH(request, { params }) {
 
     if (!userId) {
       return NextResponse.json(
-        { message: "You must be logged in." },
+        { success: false, message: "You must be logged in." },
         { status: 401 }
       );
     }
 
     const { id } = await params;
-    const body = await request.json();
 
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json(
+        { success: false, message: "Booking not found." },
+        { status: 404 }
+      );
+    }
+
+    const body = await request.json().catch(() => ({}));
     const { status } = body;
 
-    if (!["confirmed", "rejected", "completed", "cancelled"].includes(status)) {
+    if (!ALLOWED_STATUSES.includes(status)) {
       return NextResponse.json(
-        { message: "Invalid booking status." },
+        { success: false, message: "Invalid booking status." },
         { status: 400 }
       );
     }
@@ -55,7 +132,7 @@ export async function PATCH(request, { params }) {
 
     if (!user) {
       return NextResponse.json(
-        { message: "User not found." },
+        { success: false, message: "User not found." },
         { status: 404 }
       );
     }
@@ -64,106 +141,113 @@ export async function PATCH(request, { params }) {
 
     if (!booking) {
       return NextResponse.json(
-        { message: "Booking not found." },
+        { success: false, message: "Booking not found." },
         { status: 404 }
       );
     }
 
-    /*
-     * Companion permissions
-     */
-
+    /* COMPANION — confirm / reject (from pending) */
     if (status === "confirmed" || status === "rejected") {
-      if (booking.companion.toString() !== userId.toString()) {
+      if (String(booking.companion) !== String(userId)) {
         return NextResponse.json(
-          { message: "You are not authorized to manage this booking." },
+          { success: false, message: "You are not authorized to manage this booking." },
           { status: 403 }
         );
       }
 
-      if (booking.status !== "pending") {
+      if (booking.status === status) {
+        // Idempotent
+      } else if (booking.status !== "pending") {
         return NextResponse.json(
-          {
-            message: `This booking is already ${booking.status}.`,
-          },
+          { success: false, message: `This booking is already ${booking.status}.` },
           { status: 400 }
+        );
+      } else {
+        booking.status = status;
+      }
+    }
+
+    /* COMPANION — check in (from confirmed) */
+    if (status === "checked_in") {
+      if (String(booking.companion) !== String(userId)) {
+        return NextResponse.json(
+          { success: false, message: "You are not authorized to check in this booking." },
+          { status: 403 }
         );
       }
 
-      booking.status = status;
+      if (booking.status === "checked_in") {
+        // Idempotent
+      } else if (booking.status !== "confirmed") {
+        return NextResponse.json(
+          { success: false, message: "Only confirmed bookings can be checked in." },
+          { status: 400 }
+        );
+      } else {
+        booking.status = "checked_in";
+        booking.checkedInAt = new Date();
+      }
     }
 
-    /*
-     * Companion can mark a confirmed booking as completed.
-     */
-
+    /* COMPANION — complete (from checked_in) */
     if (status === "completed") {
-      if (booking.companion.toString() !== userId.toString()) {
+      if (String(booking.companion) !== String(userId)) {
         return NextResponse.json(
-          { message: "You are not authorized to complete this booking." },
+          { success: false, message: "You are not authorized to complete this booking." },
           { status: 403 }
         );
       }
 
-      if (booking.status !== "confirmed") {
+      if (booking.status === "completed") {
+        // Idempotent
+      } else if (booking.status !== "checked_in") {
         return NextResponse.json(
-          {
-            message: "Only confirmed bookings can be marked as completed.",
-          },
+          { success: false, message: "Guest must be checked in before completing." },
           { status: 400 }
         );
+      } else {
+        booking.status = "completed";
+        booking.completedAt = new Date();
       }
-
-      booking.status = "completed";
     }
 
-    /*
-     * Customer can cancel their own pending/confirmed booking.
-     */
-
+    /* CUSTOMER — cancel (from pending / confirmed) */
     if (status === "cancelled") {
-      if (booking.customer.toString() !== userId.toString()) {
+      if (String(booking.customer) !== String(userId)) {
         return NextResponse.json(
-          { message: "You are not authorized to cancel this booking." },
+          { success: false, message: "You are not authorized to cancel this booking." },
           { status: 403 }
         );
       }
 
-      if (!["pending", "confirmed"].includes(booking.status)) {
+      if (booking.status === "cancelled") {
+        // Idempotent
+      } else if (!["pending", "confirmed"].includes(booking.status)) {
         return NextResponse.json(
-          {
-            message: "This booking cannot be cancelled.",
-          },
+          { success: false, message: "This booking cannot be cancelled." },
           { status: 400 }
         );
+      } else {
+        booking.status = "cancelled";
       }
-
-      booking.status = "cancelled";
     }
 
     await booking.save();
 
     const updatedBooking = await Booking.findById(booking._id)
-      .populate(
-        "customer",
-        "firstName lastName email profilePhoto city"
-      )
-      .populate(
-        "companion",
-        "firstName lastName email profilePhoto city companionProfile"
-      );
+      .populate("customer", "firstName lastName profilePhoto city")
+      .populate("companion", "firstName lastName profilePhoto")
+      .lean();
 
     return NextResponse.json({
+      success: true,
       message: "Booking updated successfully.",
       booking: updatedBooking,
     });
   } catch (error) {
     console.error("BOOKING STATUS ERROR:", error);
-
     return NextResponse.json(
-      {
-        message: "Failed to update booking.",
-      },
+      { success: false, message: "Failed to update booking." },
       { status: 500 }
     );
   }

@@ -8,6 +8,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Booking from "@/models/Booking";
 import Notification from "@/models/Notification";
+import crypto from "crypto";
 
 export const runtime = "nodejs";
 
@@ -21,22 +22,17 @@ const razorpay = new Razorpay({
 /* =========================================================
    AUTH
 ========================================================= */
-
 async function getAuthenticatedUserId() {
   const cookieStore = await cookies();
-
   const token = cookieStore.get("zqava_session")?.value;
 
-  if (!token || !JWT_SECRET) {
-    return null;
-  }
+  if (!token || !JWT_SECRET) return null;
 
   try {
     const { payload } = await jwtVerify(
       token,
       new TextEncoder().encode(JWT_SECRET)
     );
-
     return payload.userId || payload.id || null;
   } catch {
     return null;
@@ -46,72 +42,32 @@ async function getAuthenticatedUserId() {
 /* =========================================================
    TIME
 ========================================================= */
-
 function parseTimeToMinutes(value) {
-  if (typeof value !== "string") {
-    return null;
-  }
+  if (typeof value !== "string") return null;
 
   const normalized = value.trim().toUpperCase();
 
-  const twelveHourMatch =
-    normalized.match(
-      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
-    );
-
+  const twelveHourMatch = normalized.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
   if (twelveHourMatch) {
-    let hour = Number(
-      twelveHourMatch[1]
-    );
+    let hour = Number(twelveHourMatch[1]);
+    const minute = Number(twelveHourMatch[2]);
+    const period = twelveHourMatch[3];
 
-    const minute = Number(
-      twelveHourMatch[2]
-    );
-
-    const period =
-      twelveHourMatch[3];
-
-    if (
-      hour < 1 ||
-      hour > 12 ||
-      minute < 0 ||
-      minute > 59
-    ) {
-      return null;
-    }
+    if (hour < 1 || hour > 12 || minute < 0 || minute > 59) return null;
 
     if (period === "AM") {
       if (hour === 12) hour = 0;
     } else {
       if (hour !== 12) hour += 12;
     }
-
     return hour * 60 + minute;
   }
 
-  const twentyFourHourMatch =
-    normalized.match(
-      /^(\d{1,2}):(\d{2})$/
-    );
-
+  const twentyFourHourMatch = normalized.match(/^(\d{1,2}):(\d{2})$/);
   if (twentyFourHourMatch) {
-    const hour = Number(
-      twentyFourHourMatch[1]
-    );
-
-    const minute = Number(
-      twentyFourHourMatch[2]
-    );
-
-    if (
-      hour < 0 ||
-      hour > 23 ||
-      minute < 0 ||
-      minute > 59
-    ) {
-      return null;
-    }
-
+    const hour = Number(twentyFourHourMatch[1]);
+    const minute = Number(twentyFourHourMatch[2]);
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
     return hour * 60 + minute;
   }
 
@@ -121,19 +77,10 @@ function parseTimeToMinutes(value) {
 /* =========================================================
    DATE
 ========================================================= */
-
 function isValidDateString(date) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return false;
-  }
-
-  const [year, month, day] =
-    date.split("-").map(Number);
-
-  const parsed = new Date(
-    Date.UTC(year, month - 1, day)
-  );
-
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+  const [year, month, day] = date.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
   return (
     parsed.getUTCFullYear() === year &&
     parsed.getUTCMonth() === month - 1 &&
@@ -142,121 +89,55 @@ function isValidDateString(date) {
 }
 
 function isDateInPast(date) {
-  const today =
-    new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Kolkata",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(new Date());
-
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
   return date < today;
 }
 
 function getWeekday(date) {
-  const [year, month, day] =
-    date.split("-").map(Number);
-
-  const parsed = new Date(
-    Date.UTC(year, month - 1, day)
-  );
-
+  const [year, month, day] = date.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
   const days = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
+    "sunday", "monday", "tuesday", "wednesday",
+    "thursday", "friday", "saturday",
   ];
-
   return days[parsed.getUTCDay()];
 }
 
 /* =========================================================
    WEEKLY AVAILABILITY
 ========================================================= */
-
-function isWithinWeeklyAvailability({
-  availability,
-  date,
-  startMinutes,
-  duration,
-}) {
-  if (!availability) {
-    return false;
-  }
-
-  const weeklySchedule =
-    Array.isArray(
-      availability.weeklySchedule
-    )
-      ? availability.weeklySchedule
-      : [];
-
+function isWithinWeeklyAvailability({ availability, date, startMinutes, duration }) {
+  if (!availability) return false;
+  const weeklySchedule = Array.isArray(availability.weeklySchedule)
+    ? availability.weeklySchedule
+    : [];
   const weekday = getWeekday(date);
+  const daySchedule = weeklySchedule.find((day) => day.day === weekday);
+  if (!daySchedule || !daySchedule.enabled) return false;
 
-  const daySchedule =
-    weeklySchedule.find(
-      (day) => day.day === weekday
-    );
-
-  if (
-    !daySchedule ||
-    !daySchedule.enabled
-  ) {
-    return false;
-  }
-
-  const slots =
-    Array.isArray(daySchedule.slots)
-      ? daySchedule.slots
-      : [];
-
-  const requestedEnd =
-    startMinutes + duration * 60;
+  const slots = Array.isArray(daySchedule.slots) ? daySchedule.slots : [];
+  const requestedEnd = startMinutes + duration * 60;
 
   return slots.some((slot) => {
-    const slotStart =
-      parseTimeToMinutes(slot.start);
-
-    const slotEnd =
-      parseTimeToMinutes(slot.end);
-
-    if (
-      slotStart === null ||
-      slotEnd === null
-    ) {
-      return false;
-    }
+    const slotStart = parseTimeToMinutes(slot.start);
+    const slotEnd = parseTimeToMinutes(slot.end);
+    if (slotStart === null || slotEnd === null) return false;
 
     if (slotEnd > slotStart) {
-      return (
-        startMinutes >= slotStart &&
-        requestedEnd <= slotEnd
-      );
+      return startMinutes >= slotStart && requestedEnd <= slotEnd;
     }
 
     if (slotEnd < slotStart) {
-      const overnightEnd =
-        slotEnd + 24 * 60;
-
-      let normalizedStart =
-        startMinutes;
-
-      if (normalizedStart < slotStart) {
-        normalizedStart += 24 * 60;
-      }
-
-      const normalizedEnd =
-        normalizedStart +
-        duration * 60;
-
-      return (
-        normalizedStart >= slotStart &&
-        normalizedEnd <= overnightEnd
-      );
+      const overnightEnd = slotEnd + 24 * 60;
+      let normalizedStart = startMinutes;
+      if (normalizedStart < slotStart) normalizedStart += 24 * 60;
+      const normalizedEnd = normalizedStart + duration * 60;
+      return normalizedStart >= slotStart && normalizedEnd <= overnightEnd;
     }
 
     return false;
@@ -264,230 +145,104 @@ function isWithinWeeklyAvailability({
 }
 
 /* =========================================================
-   OVERLAPPING BOOKINGS
+   OVERLAPPING BOOKINGS — now includes checked_in
 ========================================================= */
+async function hasOverlappingBooking({ companionId, date, startMinutes, duration }) {
+  const bookings = await Booking.find({
+    companion: companionId,
+    date,
+    status: {
+      $in: ["pending", "confirmed", "checked_in"],  // ← FIX
+    },
+  })
+    .select("time duration")
+    .lean();
 
-async function hasOverlappingBooking({
-  companionId,
-  date,
-  startMinutes,
-  duration,
-}) {
-  const bookings =
-    await Booking.find({
-      companion: companionId,
-      date,
-      status: {
-        $in: [
-          "pending",
-          "confirmed",
-        ],
-      },
-    })
-      .select("time duration")
-      .lean();
-
-  const requestedEnd =
-    startMinutes + duration * 60;
+  const requestedEnd = startMinutes + duration * 60;
 
   return bookings.some((booking) => {
-    const existingStart =
-      parseTimeToMinutes(
-        booking.time
-      );
-
-    if (existingStart === null) {
-      return false;
-    }
-
-    const existingEnd =
-      existingStart +
-      Number(booking.duration || 0) *
-        60;
-
-    return (
-      startMinutes < existingEnd &&
-      requestedEnd > existingStart
-    );
+    const existingStart = parseTimeToMinutes(booking.time);
+    if (existingStart === null) return false;
+    const existingEnd = existingStart + Number(booking.duration || 0) * 60;
+    return startMinutes < existingEnd && requestedEnd > existingStart;
   });
 }
 
 /* =========================================================
    VERIFY RAZORPAY PAYMENT
 ========================================================= */
+async function verifyRazorpayPayment({ userId, orderId, paymentId }) {
+  const order = await razorpay.orders.fetch(orderId);
+  if (!order) throw new Error("Razorpay order not found.");
 
-async function verifyRazorpayPayment({
-  userId,
-  orderId,
-  paymentId,
-}) {
-  const order =
-    await razorpay.orders.fetch(
-      orderId
-    );
-
-  if (!order) {
-    throw new Error(
-      "Razorpay order not found."
-    );
+  if (String(order.notes?.customerId || "") !== String(userId)) {
+    throw new Error("This payment order does not belong to you.");
   }
 
-  if (
-    String(
-      order.notes?.customerId || ""
-    ) !== String(userId)
-  ) {
-    throw new Error(
-      "This payment order does not belong to you."
-    );
+  const payment = await razorpay.payments.fetch(paymentId);
+  if (!payment) throw new Error("Razorpay payment not found.");
+
+  if (String(payment.order_id || "") !== String(orderId)) {
+    throw new Error("Payment does not belong to this order.");
   }
 
-  const payment =
-    await razorpay.payments.fetch(
-      paymentId
-    );
-
-  if (!payment) {
-    throw new Error(
-      "Razorpay payment not found."
-    );
+  if (Number(payment.amount) !== Number(order.amount)) {
+    throw new Error("Payment amount does not match the order.");
   }
 
-  if (
-    String(payment.order_id || "") !==
-    String(orderId)
-  ) {
-    throw new Error(
-      "Payment does not belong to this order."
-    );
+  if (String(payment.currency || "") !== String(order.currency || "")) {
+    throw new Error("Payment currency does not match the order.");
   }
 
-  if (
-    Number(payment.amount) !==
-    Number(order.amount)
-  ) {
-    throw new Error(
-      "Payment amount does not match the order."
-    );
+  if (payment.status !== "captured") {
+    throw new Error(`Payment is not captured. Current status: ${payment.status}.`);
   }
 
-  if (
-    String(payment.currency || "") !==
-    String(order.currency || "")
-  ) {
-    throw new Error(
-      "Payment currency does not match the order."
-    );
-  }
-
-  if (
-    payment.status !== "captured"
-  ) {
-    throw new Error(
-      `Payment is not captured. Current status: ${payment.status}.`
-    );
-  }
-
-  return {
-    order,
-    payment,
-  };
+  return { order, payment };
 }
 
 /* =========================================================
-   GET BOOKINGS
+   GET BOOKINGS  (unchanged)
 ========================================================= */
-
 export async function GET(request) {
   try {
-    const userId =
-      await getAuthenticatedUserId();
-
+    const userId = await getAuthenticatedUserId();
     if (!userId) {
-      return NextResponse.json(
-        {
-          message: "Unauthorized",
-        },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     await connectDB();
 
-    const { searchParams } =
-      new URL(request.url);
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get("type") || "customer";
 
-    const type =
-      searchParams.get("type") ||
-      "customer";
-
-    if (
-      !["customer", "companion"].includes(
-        type
-      )
-    ) {
-      return NextResponse.json(
-        {
-          message:
-            "Invalid booking type.",
-        },
-        { status: 400 }
-      );
+    if (!["customer", "companion"].includes(type)) {
+      return NextResponse.json({ message: "Invalid booking type." }, { status: 400 });
     }
 
     if (type === "companion") {
-      const user =
-        await User.findById(userId)
-          .select("role")
-          .lean();
-
+      const user = await User.findById(userId).select("role").lean();
       if (!user || user.role !== "companion") {
         return NextResponse.json(
-          {
-            message:
-              "Only companions can access companion bookings.",
-          },
+          { message: "Only companions can access companion bookings." },
           { status: 403 }
         );
       }
     }
 
-    const filter =
-      type === "companion"
-        ? { companion: userId }
-        : { customer: userId };
+    const filter = type === "companion" ? { companion: userId } : { customer: userId };
 
-    const bookings =
-      await Booking.find(filter)
-        .populate(
-          "customer",
-          "firstName lastName email profilePhoto"
-        )
-        .populate(
-          "companion",
-          "firstName lastName companionProfile"
-        )
-        .sort({
-          createdAt: -1,
-        })
-        .lean();
+    const bookings = await Booking.find(filter)
+      .populate("customer", "firstName lastName email profilePhoto")
+      .populate("companion", "firstName lastName companionProfile")
+      .sort({ createdAt: -1 })
+      .lean();
 
-    return NextResponse.json({
-      success: true,
-      bookings,
-    });
+    return NextResponse.json({ success: true, bookings });
   } catch (error) {
-    console.error(
-      "GET BOOKINGS ERROR:",
-      error
-    );
-
+    console.error("GET BOOKINGS ERROR:", error);
     return NextResponse.json(
-      {
-        success: false,
-        message:
-          "Failed to load bookings.",
-      },
+      { success: false, message: "Failed to load bookings." },
       { status: 500 }
     );
   }
@@ -496,19 +251,12 @@ export async function GET(request) {
 /* =========================================================
    CREATE BOOKING
 ========================================================= */
-
 export async function POST(request) {
   try {
-    const userId =
-      await getAuthenticatedUserId();
-
+    const userId = await getAuthenticatedUserId();
     if (!userId) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Please log in before booking.",
-        },
+        { success: false, message: "Please log in before booking." },
         { status: 401 }
       );
     }
@@ -518,372 +266,189 @@ export async function POST(request) {
     const body = await request.json();
 
     const {
-      companionId,
-      date,
-      time,
-      duration,
-      message,
-      razorpayOrderId,
-      razorpayPaymentId,
+      companionId, date, time, duration, message,
+      razorpayOrderId, razorpayPaymentId,
     } = body;
 
-    /* =====================================================
-       BASIC VALIDATION
-    ===================================================== */
-
+    /* ---------- BASIC VALIDATION ---------- */
     if (
-      !companionId ||
-      !date ||
-      !time ||
-      !duration ||
-      !razorpayOrderId ||
-      !razorpayPaymentId
+      !companionId || !date || !time || !duration ||
+      !razorpayOrderId || !razorpayPaymentId
     ) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Missing required booking or payment details.",
-        },
+        { success: false, message: "Missing required booking or payment details." },
         { status: 400 }
       );
     }
 
-    if (
-      !mongoose.Types.ObjectId.isValid(
-        companionId
-      )
-    ) {
+    if (!mongoose.Types.ObjectId.isValid(companionId)) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Invalid companion ID.",
-        },
+        { success: false, message: "Invalid companion ID." },
         { status: 400 }
       );
     }
 
-    if (
-      String(companionId) ===
-      String(userId)
-    ) {
+    if (String(companionId) === String(userId)) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "You cannot book yourself.",
-        },
+        { success: false, message: "You cannot book yourself." },
         { status: 400 }
       );
     }
 
-    const numericDuration =
-      Number(duration);
-
-    if (
-      !Number.isInteger(
-        numericDuration
-      ) ||
-      numericDuration < 1 ||
-      numericDuration > 24
-    ) {
+    const numericDuration = Number(duration);
+    if (!Number.isInteger(numericDuration) || numericDuration < 1 || numericDuration > 24) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Invalid booking duration.",
-        },
+        { success: false, message: "Invalid booking duration." },
         { status: 400 }
       );
     }
 
-    if (
-      !isValidDateString(date)
-    ) {
+    if (!isValidDateString(date)) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Invalid booking date.",
-        },
+        { success: false, message: "Invalid booking date." },
         { status: 400 }
       );
     }
 
     if (isDateInPast(date)) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "You cannot book a date in the past.",
-        },
+        { success: false, message: "You cannot book a date in the past." },
         { status: 400 }
       );
     }
 
-    const startMinutes =
-      parseTimeToMinutes(time);
-
+    const startMinutes = parseTimeToMinutes(time);
     if (startMinutes === null) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Invalid booking time.",
-        },
+        { success: false, message: "Invalid booking time." },
         { status: 400 }
       );
     }
 
     /* =====================================================
-       DUPLICATE PAYMENT CHECK
+       STEP 1 — VERIFY PAYMENT FIRST
+       This ensures order/payment are real and belong to
+       this user BEFORE any duplicate check runs.
     ===================================================== */
-
-    const existingPaymentBooking =
-      await Booking.findOne({
-        $or: [
-          {
-            razorpayPaymentId,
-          },
-          {
-            razorpayOrderId,
-          },
-        ],
+    let verified;
+    try {
+      verified = await verifyRazorpayPayment({
+        userId, orderId: razorpayOrderId, paymentId: razorpayPaymentId,
       });
+    } catch (paymentError) {
+      console.error("RAZORPAY BOOKING VERIFICATION ERROR:", paymentError);
+      return NextResponse.json(
+        {
+          success: false,
+          message: paymentError?.message || "Payment verification failed.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const { order, payment } = verified;
+
+    /* =====================================================
+       STEP 2 — DUPLICATE PAYMENT CHECK (safe now)
+    ===================================================== */
+    const existingPaymentBooking = await Booking.findOne({
+      $or: [{ razorpayPaymentId }, { razorpayOrderId }],
+    });
 
     if (existingPaymentBooking) {
-      /*
-       * Idempotent response.
-       *
-       * If the browser retries the same request after
-       * the booking was already created, return the
-       * existing booking instead of creating another.
-       */
-      if (
-        String(
-          existingPaymentBooking.customer
-        ) === String(userId)
-      ) {
+      if (String(existingPaymentBooking.customer) === String(userId)) {
         return NextResponse.json({
           success: true,
-          message:
-            "Booking already created.",
+          message: "Booking already created.",
           booking: existingPaymentBooking,
           alreadyCreated: true,
         });
       }
-
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "This payment has already been used.",
-        },
+        { success: false, message: "This payment has already been used." },
         { status: 409 }
       );
     }
 
-    /* =====================================================
-       VERIFY PAYMENT WITH RAZORPAY
-    ===================================================== */
-
-    let verified;
-
-    try {
-      verified =
-        await verifyRazorpayPayment({
-          userId,
-          orderId:
-            razorpayOrderId,
-          paymentId:
-            razorpayPaymentId,
-        });
-    } catch (paymentError) {
-      console.error(
-        "RAZORPAY BOOKING VERIFICATION ERROR:",
-        paymentError
-      );
-
+    /* ---------- ORDER NOTES MUST MATCH REQUEST ---------- */
+    if (String(order.notes?.companionId || "") !== String(companionId)) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            paymentError?.message ||
-            "Payment verification failed.",
-        },
+        { success: false, message: "Payment order does not match the companion." },
         { status: 400 }
       );
     }
 
-    const {
-      order,
-      payment,
-    } = verified;
-
-    /* =====================================================
-       MAKE SURE ORDER DETAILS MATCH REQUEST
-    ===================================================== */
-
-    if (
-      String(
-        order.notes?.companionId || ""
-      ) !== String(companionId)
-    ) {
+    if (String(order.notes?.date || "") !== String(date)) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Payment order does not match the companion.",
-        },
+        { success: false, message: "Payment order does not match the booking date." },
         { status: 400 }
       );
     }
 
-    if (
-      String(order.notes?.date || "") !==
-      String(date)
-    ) {
+    if (String(order.notes?.time || "") !== String(time)) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Payment order does not match the booking date.",
-        },
+        { success: false, message: "Payment order does not match the booking time." },
         { status: 400 }
       );
     }
 
-    if (
-      String(order.notes?.time || "") !==
-      String(time)
-    ) {
+    if (Number(order.notes?.duration || 0) !== numericDuration) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Payment order does not match the booking time.",
-        },
+        { success: false, message: "Payment order does not match the booking duration." },
         { status: 400 }
       );
     }
 
-    if (
-      Number(
-        order.notes?.duration || 0
-      ) !== numericDuration
-    ) {
+    /* ---------- COMPANION ---------- */
+    const companion = await User.findOne({
+      _id: companionId,
+      role: "companion",
+    }).lean();
+
+    if (!companion || !companion.companionProfile) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Payment order does not match the booking duration.",
-        },
-        { status: 400 }
-      );
-    }
-
-    /* =====================================================
-       COMPANION
-    ===================================================== */
-
-    const companion =
-      await User.findOne({
-        _id: companionId,
-        role: "companion",
-      }).lean();
-
-    if (
-      !companion ||
-      !companion.companionProfile
-    ) {
-      return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Companion not found.",
-        },
+        { success: false, message: "Companion not found." },
         { status: 404 }
       );
     }
 
-    const profile =
-      companion.companionProfile;
+    const profile = companion.companionProfile;
 
-    if (
-      profile.applicationStatus !==
-      "approved"
-    ) {
+    if (profile.applicationStatus !== "approved") {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "This companion is not currently available for bookings.",
-        },
+        { success: false, message: "This companion is not currently available for bookings." },
         { status: 400 }
       );
     }
 
-    if (
-      profile.available === false
-    ) {
+    if (profile.available === false) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "This companion is currently unavailable.",
-        },
+        { success: false, message: "This companion is currently unavailable." },
         { status: 400 }
       );
     }
 
-    /* =====================================================
-       AVAILABILITY
-    ===================================================== */
-
-    const available =
-      isWithinWeeklyAvailability({
-        availability:
-          profile.availability,
-        date,
-        startMinutes,
-        duration:
-          numericDuration,
-      });
+    /* ---------- AVAILABILITY ---------- */
+    const available = isWithinWeeklyAvailability({
+      availability: profile.availability,
+      date,
+      startMinutes,
+      duration: numericDuration,
+    });
 
     if (!available) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "The companion is not available at this date and time.",
-        },
+        { success: false, message: "The companion is not available at this date and time." },
         { status: 409 }
       );
     }
 
-    /* =====================================================
-       OVERLAP
-    ===================================================== */
-
-    const overlapping =
-      await hasOverlappingBooking({
-        companionId,
-        date,
-        startMinutes,
-        duration:
-          numericDuration,
-      });
+    /* ---------- OVERLAP ---------- */
+    const overlapping = await hasOverlappingBooking({
+      companionId, date, startMinutes, duration: numericDuration,
+    });
 
     if (overlapping) {
-      /*
-       * Important:
-       * Payment has already happened.
-       *
-       * In this situation you should have a refund/
-       * reconciliation flow rather than silently
-       * losing the payment.
-       */
       return NextResponse.json(
         {
           success: false,
@@ -896,45 +461,21 @@ export async function POST(request) {
       );
     }
 
-    /* =====================================================
-       PRICE FROM DATABASE
-    ===================================================== */
-
-    const hourlyRate =
-      Number(
-        profile.hourlyRate || 0
-      );
-
-    if (
-      !Number.isFinite(hourlyRate) ||
-      hourlyRate <= 0
-    ) {
+    /* ---------- PRICE FROM DATABASE ---------- */
+    const hourlyRate = Number(profile.hourlyRate || 0);
+    if (!Number.isFinite(hourlyRate) || hourlyRate <= 0) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Companion pricing is unavailable.",
-        },
+        { success: false, message: "Companion pricing is unavailable." },
         { status: 400 }
       );
     }
 
-    const subtotal =
-      hourlyRate *
-      numericDuration;
-
+    const subtotal = hourlyRate * numericDuration;
     const serviceFee = 0;
+    const total = subtotal + serviceFee;
+    const expectedAmountInPaise = Math.round(total * 100);
 
-    const total =
-      subtotal + serviceFee;
-
-    const expectedAmountInPaise =
-      Math.round(total * 100);
-
-    if (
-      Number(payment.amount) !==
-      expectedAmountInPaise
-    ) {
+    if (Number(payment.amount) !== expectedAmountInPaise) {
       return NextResponse.json(
         {
           success: false,
@@ -947,123 +488,76 @@ export async function POST(request) {
       );
     }
 
-    /* =====================================================
-       MESSAGE
-    ===================================================== */
-
+    /* ---------- MESSAGE ---------- */
     const cleanMessage =
-      typeof message === "string"
-        ? message.trim().slice(0, 1000)
-        : "";
+      typeof message === "string" ? message.trim().slice(0, 1000) : "";
 
-    /* =====================================================
-       CREATE BOOKING
-    ===================================================== */
-
+    /* ---------- CREATE BOOKING ---------- */
+    let booking;
     try {
-      const booking =
-        await Booking.create({
-          customer: userId,
-          companion: companionId,
-
-          date,
-          time,
-
-          duration:
-            numericDuration,
-
-          hourlyRate,
-
-          subtotal,
-
-          serviceFee,
-
-          total,
-
-          message: cleanMessage,
-
-          paymentMethod:
-            payment.method ||
-            "razorpay",
-
-          razorpayOrderId,
-          razorpayPaymentId,
-
-          paymentStatus: "paid",
-
-          /*
-           * Payment is complete.
-           * Companion still needs to accept/confirm.
-           */
-          status: "pending",
-        });
-
-  // ============================================
-  // CREATE COMPANION NOTIFICATION
-  // ============================================
-
-  await Notification.create({
-    recipient: companionId,
-    type: "booking_created",
-    title: "New Booking Request",
-    message: `You received a new booking request for ${date} at ${time}.`,
-    bookingId: booking._id,
-  });
-
-      return NextResponse.json(
-        {
-          success: true,
-          message:
-            "Booking request created successfully.",
-          booking,
-        },
-        { status: 201 }
-      );
+      booking = await Booking.create({
+        customer: userId,
+        companion: companionId,
+        date,
+        time,
+        duration: numericDuration,
+        hourlyRate,
+        subtotal,
+        serviceFee,
+        total,
+        message: cleanMessage,
+        paymentMethod: payment.method || "razorpay",
+        razorpayOrderId,
+        razorpayPaymentId,
+        paymentStatus: "paid",
+        checkinCode:
+          "CK-" + crypto.randomBytes(4).toString("hex").toUpperCase(),
+        status: "pending",
+      });
     } catch (createError) {
-      /*
-       * Duplicate payment/order can happen if the
-       * browser retries very quickly.
-       */
-      if (
-        createError?.code === 11000
-      ) {
-        const existing =
-          await Booking.findOne({
-            $or: [
-              {
-                razorpayPaymentId,
-              },
-              {
-                razorpayOrderId,
-              },
-            ],
-          });
-
+      if (createError?.code === 11000) {
+        const existing = await Booking.findOne({
+          $or: [{ razorpayPaymentId }, { razorpayOrderId }],
+        });
         if (existing) {
           return NextResponse.json({
             success: true,
-            message:
-              "Booking already created.",
+            message: "Booking already created.",
             booking: existing,
             alreadyCreated: true,
           });
         }
       }
-
       throw createError;
     }
-  } catch (error) {
-    console.error(
-      "CREATE BOOKING ERROR:",
-      error
-    );
+
+    /* =====================================================
+       STEP 3 — NOTIFICATION (fire and forget, never block)
+    ===================================================== */
+    try {
+      await Notification.create({
+        recipient: companionId,
+        type: "booking_created",
+        title: "New Booking Request",
+        message: `You received a new booking request for ${date} at ${time}.`,
+        bookingId: booking._id,
+      });
+    } catch (notifyErr) {
+      console.error("NOTIFICATION CREATE FAILED (non-fatal):", notifyErr);
+    }
 
     return NextResponse.json(
       {
-        success: false,
-        message:
-          "Failed to create booking.",
+        success: true,
+        message: "Booking request created successfully.",
+        booking,
       },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("CREATE BOOKING ERROR:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to create booking." },
       { status: 500 }
     );
   }
