@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 import "./BookingChat.css";
@@ -19,27 +19,21 @@ export default function BookingChat({
   const [messageText, setMessageText] = useState("");
 
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const textareaRef = useRef(null);
+  const shouldAutoScrollRef = useRef(true);
 
   /* =========================================================
      LOAD CHAT
   ========================================================= */
-
   const loadMessages = useCallback(
     async (showLoading = false) => {
       try {
-        if (showLoading) {
-          setLoading(true);
-        }
+        if (showLoading) setLoading(true);
 
         const response = await fetch(
-          `/api/messages?bookingId=${encodeURIComponent(
-            bookingId
-          )}`,
-          {
-            method: "GET",
-            cache: "no-store",
-          }
+          `/api/messages?bookingId=${encodeURIComponent(bookingId)}`,
+          { method: "GET", cache: "no-store" }
         );
 
         const data = await response.json();
@@ -62,21 +56,14 @@ export default function BookingChat({
         });
 
         setMessages(data.messages || []);
-
         setError("");
       } catch (err) {
         console.error("Load messages error:", err);
-
         if (showLoading) {
-          setError(
-            err.message ||
-              "Unable to load conversation."
-          );
+          setError(err.message || "Unable to load conversation.");
         }
       } finally {
-        if (showLoading) {
-          setLoading(false);
-        }
+        if (showLoading) setLoading(false);
       }
     },
     [bookingId]
@@ -85,17 +72,14 @@ export default function BookingChat({
   /* =========================================================
      INITIAL LOAD
   ========================================================= */
-
   useEffect(() => {
     if (!bookingId) return;
-
     loadMessages(true);
   }, [bookingId, loadMessages]);
 
   /* =========================================================
      POLLING
   ========================================================= */
-
   useEffect(() => {
     if (!bookingId) return;
 
@@ -103,35 +87,59 @@ export default function BookingChat({
       loadMessages(false);
     }, 4000);
 
-    return () => {
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [bookingId, loadMessages]);
 
   /* =========================================================
-     SCROLL
+     AUTO SCROLL
   ========================================================= */
+/* =========================================================
+   AUTO SCROLL — scroll only the messages container,
+   not the whole page
+========================================================= */
+useEffect(() => {
+  if (loading) return;
+  if (!shouldAutoScrollRef.current) return;
 
- {/* useEffect(() => {
-    if (!loading) {
-      messagesEndRef.current?.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
-  }, [messages, loading]);*/}
+  const container = messagesContainerRef.current;
+  if (!container) return;
+
+  container.scrollTo({
+    top: container.scrollHeight,
+    behavior: "smooth",
+  });
+}, [messages, loading]);
+
+  /* Track whether user is near the bottom */
+  function handleScroll() {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+
+    const distanceFromBottom =
+      el.scrollHeight - el.scrollTop - el.clientHeight;
+
+    shouldAutoScrollRef.current = distanceFromBottom < 80;
+  }
+
+  /* =========================================================
+     AUTO-GROW TEXTAREA
+  ========================================================= */
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 130)}px`;
+  }, [messageText]);
 
   /* =========================================================
      SEND MESSAGE
   ========================================================= */
-
   async function handleSendMessage(event) {
     event?.preventDefault();
 
     const text = messageText.trim();
-
-    if (!text || sending) {
-      return;
-    }
+    if (!text || sending) return;
 
     try {
       setSending(true);
@@ -139,13 +147,8 @@ export default function BookingChat({
 
       const response = await fetch("/api/messages", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          bookingId,
-          text,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingId, text }),
       });
 
       const data = await response.json();
@@ -156,25 +159,16 @@ export default function BookingChat({
       }
 
       if (!response.ok || !data.success) {
-        throw new Error(
-          data.message || "Unable to send message."
-        );
+        throw new Error(data.message || "Unable to send message.");
       }
 
-      setMessages((current) => [
-        ...current,
-        data.message,
-      ]);
-
+      shouldAutoScrollRef.current = true;
+      setMessages((current) => [...current, data.message]);
       setMessageText("");
-
       textareaRef.current?.focus();
     } catch (err) {
       console.error("Send message error:", err);
-
-      setError(
-        err.message || "Unable to send message."
-      );
+      setError(err.message || "Unable to send message.");
     } finally {
       setSending(false);
     }
@@ -183,11 +177,9 @@ export default function BookingChat({
   /* =========================================================
      ENTER TO SEND
   ========================================================= */
-
   function handleKeyDown(event) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-
       handleSendMessage();
     }
   }
@@ -195,52 +187,55 @@ export default function BookingChat({
   /* =========================================================
      HELPERS
   ========================================================= */
-
   function getOtherPerson() {
     if (!booking) return null;
-
-    if (booking.viewerRole === "customer") {
-      return booking.companion;
-    }
-
+    if (booking.viewerRole === "customer") return booking.companion;
     return booking.customer;
-  }
-
-  function getMessageSenderId(message) {
-    return message.sender?._id?.toString();
   }
 
   function isOwnMessage(message) {
     return (
-      getMessageSenderId(message) ===
+      message.sender?._id?.toString() ===
       booking?.viewerId?.toString()
     );
   }
 
   function formatMessageTime(date) {
     if (!date) return "";
-
-    return new Date(date).toLocaleTimeString(
-      "en-IN",
-      {
-        hour: "numeric",
-        minute: "2-digit",
-      }
-    );
+    return new Date(date).toLocaleTimeString("en-IN", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
   }
 
   function formatBookingDate(dateString) {
     if (!dateString) return "";
-
-    const date = new Date(
-      `${dateString}T00:00:00`
-    );
-
-    if (Number.isNaN(date.getTime())) {
-      return dateString;
-    }
-
+    const date = new Date(`${dateString}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return dateString;
     return date.toLocaleDateString("en-IN", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  function dateGroupLabel(iso) {
+    if (!iso) return "";
+    const d = new Date(iso);
+    const today = new Date();
+    const y = new Date();
+    y.setDate(today.getDate() - 1);
+
+    const sameDay = (a, b) =>
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate();
+
+    if (sameDay(d, today)) return "Today";
+    if (sameDay(d, y)) return "Yesterday";
+
+    return d.toLocaleDateString("en-IN", {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -248,9 +243,27 @@ export default function BookingChat({
   }
 
   /* =========================================================
+     GROUPED MESSAGES (by day)
+  ========================================================= */
+  const groupedMessages = useMemo(() => {
+    const groups = [];
+    let lastKey = null;
+
+    for (const message of messages) {
+      const key = dateGroupLabel(message.createdAt);
+      if (key !== lastKey) {
+        groups.push({ type: "day", label: key, key: `day-${key}` });
+        lastKey = key;
+      }
+      groups.push({ type: "msg", message });
+    }
+
+    return groups;
+  }, [messages]);
+
+  /* =========================================================
      LOADING
   ========================================================= */
-
   if (loading) {
     return (
       <main className="chat-page">
@@ -265,21 +278,14 @@ export default function BookingChat({
   /* =========================================================
      ERROR
   ========================================================= */
-
   if (error && !booking) {
     return (
       <main className="chat-page">
         <div className="chat-error-card">
           <div className="chat-error-icon">!</div>
-
           <h1>Conversation unavailable</h1>
-
           <p>{error}</p>
-
-          <Link
-            href={backHref}
-            className="chat-back-button"
-          >
+          <Link href={backHref} className="chat-back-button">
             Go back
           </Link>
         </div>
@@ -288,148 +294,103 @@ export default function BookingChat({
   }
 
   const otherPerson = getOtherPerson();
-
   const displayName =
-    otherPerson?.name || "Companion";
+    otherPerson?.name ||
+    `${otherPerson?.firstName || ""} ${otherPerson?.lastName || ""}`.trim() ||
+    "Companion";
+  const profilePhoto = otherPerson?.profilePhoto || "";
 
-  const profilePhoto =
-    otherPerson?.profilePhoto || "";
+  const isCustomer = booking.viewerRole === "customer";
 
   return (
     <main className="chat-page">
-
       <section className="chat-shell">
-
-        {/* =================================================
-            HEADER
-        ================================================= */}
-
+        {/* HEADER */}
         <header className="chat-header">
-
-          {/*<Link
+          <Link
             href={backHref}
             className="chat-header-back"
             aria-label="Go back"
           >
             ←
-          </Link>*/}
+          </Link>
 
           <div className="chat-person">
-
             <div className="chat-person-avatar">
-
               {profilePhoto ? (
-                <img
-                  src={profilePhoto}
-                  alt={displayName}
-                />
+                <img src={profilePhoto} alt={displayName} />
               ) : (
-                <span>
-                  {displayName
-                    .charAt(0)
-                    .toUpperCase()}
-                </span>
+                <span>{displayName.charAt(0).toUpperCase()}</span>
               )}
-
             </div>
 
             <div>
               <h1>{displayName}</h1>
-
-              <p>
-                {booking.viewerRole ===
-                "customer"
-                  ? "Your companion"
-                  : "Customer"}
-              </p>
+              <p>{isCustomer ? "Your companion" : "Customer"}</p>
             </div>
-
           </div>
 
           <div className="chat-booking-status">
             <span className="chat-paid-dot" />
             Paid booking
           </div>
-
         </header>
 
-        {/* =================================================
-            BOOKING INFO
-        ================================================= */}
-
+        {/* BOOKING BAR */}
         <div className="chat-booking-bar">
-
           <div>
             <span>BOOKING</span>
-
-            <strong>
-              {formatBookingDate(
-                booking.date
-              )}
-            </strong>
+            <strong>{formatBookingDate(booking.date)}</strong>
           </div>
-
           <div>
             <span>TIME</span>
-
             <strong>{booking.time}</strong>
           </div>
-
           <div>
             <span>DURATION</span>
-
             <strong>
               {booking.duration}{" "}
-              {booking.duration === 1
-                ? "hour"
-                : "hours"}
+              {booking.duration === 1 ? "hour" : "hours"}
             </strong>
           </div>
-
         </div>
 
-        {/* =================================================
-            NOTICE
-        ================================================= */}
-
+        {/* NOTICE */}
         <div className="chat-notice">
-
           <span>💬</span>
-
           <p>
-            Use this chat to coordinate your
-            meeting details with each other.
+            Use this chat to coordinate your meeting details with
+            each other.
           </p>
-
         </div>
 
-        {/* =================================================
-            MESSAGES
-        ================================================= */}
-
-        <div className="chat-messages">
-
+        {/* MESSAGES */}
+        <div
+          className="chat-messages"
+          ref={messagesContainerRef}
+          onScroll={handleScroll}
+        >
           {messages.length === 0 ? (
             <div className="chat-empty">
-
-              <div className="chat-empty-icon">
-                💬
-              </div>
-
+              <div className="chat-empty-icon">💬</div>
               <h2>Start the conversation</h2>
-
               <p>
-                Say hello and coordinate where
-                you would like to meet.
+                Say hello and coordinate where you&apos;d like to
+                meet.
               </p>
-
             </div>
           ) : (
-            messages.map((message) => {
+            groupedMessages.map((entry) => {
+              if (entry.type === "day") {
+                return (
+                  <div key={entry.key} className="chat-day-divider">
+                    <span>{entry.label}</span>
+                  </div>
+                );
+              }
 
-              const own = isOwnMessage(
-                message
-              );
+              const message = entry.message;
+              const own = isOwnMessage(message);
 
               return (
                 <div
@@ -440,42 +401,28 @@ export default function BookingChat({
                       : "chat-message-row-other"
                   }`}
                 >
-
                   {!own && (
                     <div className="chat-message-avatar">
-
-                      {message.sender
-                        ?.profilePhoto ? (
+                      {message.sender?.profilePhoto ? (
                         <img
-                          src={
-                            message.sender
-                              .profilePhoto
-                          }
+                          src={message.sender.profilePhoto}
                           alt=""
                         />
                       ) : (
                         <span>
-                          {(
-                            message.sender
-                              ?.firstName ||
-                            "U"
-                          )
+                          {(message.sender?.firstName || "U")
                             .charAt(0)
                             .toUpperCase()}
                         </span>
                       )}
-
                     </div>
                   )}
 
                   <div
                     className={`chat-message-content ${
-                      own
-                        ? "chat-message-content-own"
-                        : ""
+                      own ? "chat-message-content-own" : ""
                     }`}
                   >
-
                     <div
                       className={`chat-message-bubble ${
                         own
@@ -487,49 +434,31 @@ export default function BookingChat({
                     </div>
 
                     <span className="chat-message-time">
-                      {formatMessageTime(
-                        message.createdAt
-                      )}
+                      {formatMessageTime(message.createdAt)}
                     </span>
-
                   </div>
-
                 </div>
               );
             })
           )}
 
           <div ref={messagesEndRef} />
-
         </div>
 
-        {/* =================================================
-            ERROR
-        ================================================= */}
-
+        {/* INLINE ERROR */}
         {error && (
-          <div className="chat-inline-error">
-            {error}
-          </div>
+          <div className="chat-inline-error">{error}</div>
         )}
 
-        {/* =================================================
-            COMPOSER
-        ================================================= */}
-
+        {/* COMPOSER */}
         <form
           className="chat-composer"
           onSubmit={handleSendMessage}
         >
-
           <textarea
             ref={textareaRef}
             value={messageText}
-            onChange={(event) =>
-              setMessageText(
-                event.target.value
-              )
-            }
+            onChange={(event) => setMessageText(event.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             maxLength={2000}
@@ -539,23 +468,16 @@ export default function BookingChat({
 
           <button
             type="submit"
-            disabled={
-              sending ||
-              !messageText.trim()
-            }
+            disabled={sending || !messageText.trim()}
           >
             {sending ? "..." : "Send"}
           </button>
-
         </form>
 
         <p className="chat-composer-hint">
-          Press Enter to send · Shift + Enter
-          for a new line
+          Press Enter to send · Shift + Enter for a new line
         </p>
-
       </section>
-
     </main>
   );
 }

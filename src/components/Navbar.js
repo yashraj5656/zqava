@@ -53,11 +53,12 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <nav className="nav-links">
           <Link href="/explore">Explore</Link>
-
-          <Link href="/become-a-companion">Become Companion</Link>
+          <Link href="/parties">Parties</Link>
+          <Link href="/host">Host Dashboard</Link>
+          <Link href="/companion/dashboard">Companion Dashboard</Link>
           <Link href="/bookings">My companion</Link>
-          <Link href="/companion-bookings">Bookings</Link>
-          <Link href="/companion-earnings">Earnings</Link>
+          {/*<Link href="/companion-bookings">Bookings</Link>
+          <Link href="/companion-earnings">Earnings</Link>*/}
           {!loading && user && (
             accountType === "companion" ? (
               <Link href="/creator/dashboard">
@@ -125,6 +126,24 @@ export default function Navbar() {
 {menuOpen && (
   <div className="zqava-mobile-menu">
     <div className="zqava-mobile-links">
+              {/* Logged-in user */}
+              {!loading && user && (
+        accountType === "companion" ? (
+          <Link
+            href="/companion-profile"
+            onClick={closeMenu}
+          >
+            Account
+          </Link>
+        ) : (
+          <Link
+            href="/profile"
+            onClick={closeMenu}
+          >
+            Account
+          </Link>
+        )
+      )}
       <Link href="/" onClick={closeMenu}>
         Home
       </Link>
@@ -132,24 +151,11 @@ export default function Navbar() {
       <Link href="/explore" onClick={closeMenu}>
         Explore
       </Link>
-            {/* Logged-in user */}
-            {!loading && user && (
-        accountType === "companion" ? (
-          <Link
-            href="/companion-profile"
-            onClick={closeMenu}
-          >
-            Companion Profile
-          </Link>
-        ) : (
-          <Link
-            href="/profile"
-            onClick={closeMenu}
-          >
-            Profile
-          </Link>
-        )
-      )}
+
+      <Link href="/parties" onClick={closeMenu}>Parties</Link>
+      <Link href="/my-tickets" onClick={closeMenu}>My Tickets</Link>
+      <Link href="/host" onClick={closeMenu}>Host Dashboard</Link>
+      <Link href="/companion/dashboard" onClick={closeMenu}>Companion Dashboard</Link>
       <Link href="/bookings" onClick={closeMenu}>My Companion</Link>
       <Link href="/companion-bookings" onClick={closeMenu}>Bookings</Link>
       <Link href="/companion-earnings" onClick={closeMenu}>Earnings</Link>

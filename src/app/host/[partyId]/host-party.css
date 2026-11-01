@@ -1,0 +1,612 @@
+/* =========================================================
+   ZQAVA — HOST PARTY DETAIL
+   ========================================================= */
+
+   .host-party-page {
+    background: #fafaff;
+    min-height: 100vh;
+    padding: 32px 0 100px;
+  }
+  
+  .host-party-container {
+    width: min(1100px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+  
+  .host-party-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #7444ff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 22px;
+  }
+  
+  .host-party-back:hover {
+    color: #6031e8;
+  }
+  
+  /* ================= HEADER ================= */
+  .host-party-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: wrap;
+    background: #ffffff;
+    border: 1px solid #eeeeF2;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .host-party-head-left {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .host-party-head-thumb {
+    width: 88px;
+    height: 88px;
+    border-radius: 14px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #f2f2f5;
+  }
+  
+  .host-party-head-thumb.fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Manrope", sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(135deg, #7444ff 0%, #b79cff 100%);
+  }
+  
+  .host-party-head-left h1 {
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(22px, 3vw, 28px);
+    letter-spacing: -0.8px;
+    margin: 0 0 6px;
+    color: #0d0d12;
+    line-height: 1.15;
+  }
+  
+  .host-party-head-left p {
+    color: #777780;
+    font-size: 13px;
+    margin: 0 0 10px;
+    line-height: 1.5;
+  }
+  
+  /* Status pill */
+  .host-party-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    background: #e5f7ee;
+    color: #168658;
+  }
+  
+  .host-party-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  
+  .host-party-status.sold_out {
+    background: #fdecec;
+    color: #c43c3c;
+  }
+  
+  .host-party-status.cancelled {
+    background: #f0f0f3;
+    color: #777780;
+  }
+  
+  .host-party-status.draft {
+    background: #fff4d4;
+    color: #9b7511;
+  }
+  
+  .host-party-status.past {
+    background: #f0f0f3;
+    color: #777780;
+  }
+  
+  /* Header actions */
+  .host-party-head-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .host-primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 18px;
+    border-radius: 10px;
+    background: #7444ff;
+    color: #ffffff;
+    border: 1px solid #7444ff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .host-primary-btn:hover {
+    background: #6031e8;
+    transform: translateY(-1px);
+  }
+  
+  .host-danger-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 18px;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #c43c3c;
+    border: 1px solid #f8cdcd;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .host-danger-btn:hover:not(:disabled) {
+    background: #fdecec;
+  }
+  
+  .host-danger-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  
+  /* ================= STATS GRID ================= */
+  .host-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .host-stat-card {
+    background: #ffffff;
+    border: 1px solid #eeeeF2;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .host-stat-card small {
+    color: #9999a3;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  
+  .host-stat-card strong {
+    font-family: "Manrope", sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+    color: #17171d;
+    line-height: 1.1;
+  }
+  
+  .host-stat-card span {
+    color: #9999a3;
+    font-size: 11px;
+  }
+  
+  .host-stat-card.highlight {
+    background: #f5f3ff;
+    border-color: #e0d5ff;
+  }
+  
+  .host-stat-card.highlight strong {
+    color: #7444ff;
+  }
+  
+  /* ================= QUICK CHECK-IN ================= */
+  .host-quick-checkin {
+    background: #ffffff;
+    border: 1px solid #eeeeF2;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .host-quick-checkin h2 {
+    font-family: "Manrope", sans-serif;
+    font-size: 18px;
+    letter-spacing: -0.4px;
+    margin: 0 0 4px;
+    color: #17171d;
+  }
+  
+  .host-quick-checkin > p {
+    color: #777780;
+    font-size: 13px;
+    margin: 0 0 16px;
+  }
+  
+  .host-checkin-form {
+    display: flex;
+    gap: 8px;
+    max-width: 520px;
+  }
+  
+  .host-checkin-form input {
+    flex: 1;
+    padding: 13px 16px;
+    border: 1px solid #e4e4e9;
+    border-radius: 11px;
+    background: #fafafd;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #17171d;
+    text-transform: uppercase;
+  }
+  
+  .host-checkin-form input::placeholder {
+    color: #b6b6bf;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .host-checkin-form input:focus {
+    outline: none;
+    border-color: #b79cff;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(116, 68, 255, 0.1);
+  }
+  
+  .host-checkin-form button {
+    padding: 13px 22px;
+    border-radius: 11px;
+    background: #17171d;
+    color: #ffffff;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+  }
+  
+  .host-checkin-form button:hover:not(:disabled) {
+    background: #7444ff;
+  }
+  
+  .host-checkin-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .host-checkin-result {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .host-checkin-result.success {
+    background: #e5f7ee;
+    color: #168658;
+  }
+  
+  .host-checkin-result.warn {
+    background: #fff4d4;
+    color: #9b7511;
+  }
+  
+  .host-checkin-result.error {
+    background: #fdecec;
+    color: #c43c3c;
+  }
+  
+  /* ================= GUEST LIST ================= */
+  .host-guests {
+    background: #ffffff;
+    border: 1px solid #eeeeF2;
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  
+  .host-guests-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid #eeeeF2;
+    flex-wrap: wrap;
+  }
+  
+  .host-guests-head h2 {
+    font-family: "Manrope", sans-serif;
+    font-size: 18px;
+    letter-spacing: -0.4px;
+    margin: 0;
+    color: #17171d;
+  }
+  
+  .host-guests-search {
+    padding: 10px 14px;
+    border: 1px solid #e4e4e9;
+    border-radius: 10px;
+    background: #fafafd;
+    font-family: inherit;
+    font-size: 12px;
+    color: #17171d;
+    min-width: 220px;
+  }
+  
+  .host-guests-search:focus {
+    outline: none;
+    border-color: #b79cff;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(116, 68, 255, 0.1);
+  }
+  
+  .host-guests-empty {
+    padding: 48px 24px;
+    text-align: center;
+    color: #9999a3;
+    font-size: 13px;
+  }
+  
+  .host-guests-table {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .host-guests-row {
+    display: grid;
+    grid-template-columns: 2fr 1.3fr 0.5fr 1fr 0.9fr;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid #f4f4f6;
+    font-size: 13px;
+    color: #55555f;
+  }
+  
+  .host-guests-row:last-child {
+    border-bottom: none;
+  }
+  
+  .host-guests-row.head {
+    background: #fafafd;
+    color: #9999a3;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    padding: 12px 24px;
+  }
+  
+  .host-guest-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: #17171d;
+    min-width: 0;
+  }
+  
+  .host-guest-name img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  
+  .host-guest-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f5f3ff;
+    color: #7444ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Manrope", sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  
+  .host-guest-code {
+    font-family: "Manrope", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #17171d;
+  }
+  
+  .host-guest-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  
+  .host-guest-badge.paid {
+    background: #e5f7ee;
+    color: #168658;
+  }
+  
+  .host-guest-badge.in {
+    background: #f5f3ff;
+    color: #7444ff;
+  }
+  
+  .host-guest-badge::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  
+  /* ================= LOADING / ERROR ================= */
+  .host-party-loading,
+  .host-party-error {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .host-party-error h2 {
+    font-family: "Manrope", sans-serif;
+    font-size: 24px;
+    letter-spacing: -0.8px;
+    margin: 0;
+    color: #17171d;
+  }
+  
+  .host-party-error p {
+    color: #777780;
+    font-size: 14px;
+    margin: 0 0 8px;
+  }
+  
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 900px) {
+    .host-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  
+    .host-guests-row {
+      grid-template-columns: 1.6fr 1fr 0.4fr 0.8fr 0.7fr;
+      font-size: 12px;
+      padding: 12px 18px;
+    }
+  
+    .host-guests-row.head {
+      padding: 10px 18px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .host-party-page {
+      padding: 20px 0 70px;
+    }
+  
+    .host-party-container {
+      width: calc(100% - 30px);
+    }
+  
+    .host-party-head {
+      padding: 18px;
+      gap: 16px;
+    }
+  
+    .host-party-head-thumb {
+      width: 64px;
+      height: 64px;
+      font-size: 24px;
+    }
+  
+    .host-party-head-actions {
+      width: 100%;
+    }
+  
+    .host-primary-btn,
+    .host-danger-btn {
+      flex: 1;
+    }
+  
+    .host-stats-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+  
+    .host-stat-card {
+      padding: 14px;
+    }
+  
+    .host-stat-card strong {
+      font-size: 20px;
+    }
+  
+    .host-checkin-form {
+      flex-direction: column;
+    }
+  
+    .host-guests-head {
+      padding: 16px 18px;
+    }
+  
+    .host-guests-search {
+      width: 100%;
+      min-width: 0;
+    }
+  
+    /* Mobile: guest table collapses to cards */
+    .host-guests-row.head {
+      display: none;
+    }
+  
+    .host-guests-row {
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 14px 18px;
+    }
+  
+    .host-guests-row > span:nth-child(1) {
+      grid-column: 1 / -1;
+      font-size: 14px;
+    }
+  
+    .host-guests-row > span:nth-child(2) {
+      font-size: 11px;
+      color: #9999a3;
+    }
+  
+    .host-guests-row > span:nth-child(3),
+    .host-guests-row > span:nth-child(5) {
+      display: none;
+    }
+  }

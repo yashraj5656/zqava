@@ -1,0 +1,141 @@
+.checkin-page {
+    background: #fafaff;
+    min-height: 100vh;
+    padding: 40px 0 100px;
+  }
+  
+  .checkin-container {
+    width: min(520px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+  
+  .checkin-back {
+    display: inline-flex;
+    color: #7444ff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 22px;
+  }
+  
+  .checkin-card {
+    background: #ffffff;
+    border: 1px solid #eeeeF2;
+    border-radius: 22px;
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(23, 23, 29, 0.08);
+  }
+  
+  .checkin-icon {
+    font-size: 42px;
+    margin-bottom: 12px;
+  }
+  
+  .checkin-card h1 {
+    font-family: "Manrope", sans-serif;
+    font-size: 24px;
+    letter-spacing: -0.6px;
+    margin: 0 0 8px;
+    color: #17171d;
+  }
+  
+  .checkin-card > p {
+    color: #777780;
+    font-size: 13px;
+    margin: 0 0 22px;
+  }
+  
+  .checkin-form {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .checkin-form input {
+    flex: 1;
+    padding: 14px 16px;
+    border: 1px solid #e4e4e9;
+    border-radius: 11px;
+    background: #fafafd;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-align: center;
+    color: #17171d;
+  }
+  
+  .checkin-form input:focus {
+    outline: none;
+    border-color: #b79cff;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(116, 68, 255, 0.1);
+  }
+  
+  .checkin-form button {
+    padding: 14px 22px;
+    border-radius: 11px;
+    background: #7444ff;
+    color: white;
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .checkin-form button:hover:not(:disabled) {
+    background: #6031e8;
+  }
+  
+  .checkin-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .checkin-error {
+    margin-top: 16px;
+    padding: 12px;
+    background: #fdecec;
+    color: #c43c3c;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+  
+  .checkin-result {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 14px;
+  }
+  
+  .checkin-result.success {
+    background: #e5f7ee;
+    color: #168658;
+  }
+  
+  .checkin-result.warn {
+    background: #fff4d4;
+    color: #9b7511;
+  }
+  
+  .checkin-result-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  
+  .checkin-result h3 {
+    margin: 0 0 6px;
+    font-family: "Manrope", sans-serif;
+    font-size: 17px;
+  }
+  
+  .checkin-result p {
+    margin: 0 0 6px;
+    font-size: 13px;
+  }
+  
+  .checkin-result small {
+    font-size: 11px;
+    opacity: 0.75;
+  }

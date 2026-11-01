@@ -1,0 +1,765 @@
+.party-detail-page {
+    background: #fafaff;
+    min-height: 100vh;
+    padding: 40px 0 100px;
+  }
+  
+  .party-detail-container {
+    width: min(1100px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+  
+  .party-detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #7444ff;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-decoration: none;
+  }
+  
+  .party-detail-back:hover {
+    color: #6031e8;
+  }
+  
+  /* HERO */
+  .party-detail-hero {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 32px;
+    align-items: stretch;
+    margin-bottom: 44px;
+  }
+  
+  .party-detail-cover {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, #7444ff 0%, #b79cff 100%);
+  }
+  
+  .party-detail-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .party-detail-cover-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: "Manrope", sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  
+  .party-detail-category {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #17171d;
+  }
+  
+  .party-detail-hero-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .party-detail-hero-info h1 {
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(30px, 3.5vw, 44px);
+    line-height: 1.05;
+    letter-spacing: -1.5px;
+    color: #0d0d12;
+    margin: 0;
+  }
+  
+  .party-detail-venue {
+    color: #777780;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .party-detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .meta-chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: white;
+    border: 1px solid #eeeeF2;
+    border-radius: 12px;
+  }
+  
+  .meta-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: #f5f3ff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+  }
+  
+  .meta-chip strong {
+    display: block;
+    font-size: 13px;
+    color: #17171d;
+  }
+  
+  .meta-chip small {
+    display: block;
+    color: #9999a3;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  
+  .party-detail-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .party-detail-tags span {
+    padding: 5px 10px;
+    background: #f5f3ff;
+    color: #6440d9;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  
+  /* MAIN GRID */
+  .party-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+  }
+  
+  .party-detail-left {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  
+  .party-detail-section {
+    background: white;
+    border: 1px solid #eeeeF2;
+    border-radius: 18px;
+    padding: 26px;
+  }
+  
+  .party-detail-section h2 {
+    font-family: "Manrope", sans-serif;
+    font-size: 18px;
+    letter-spacing: -0.4px;
+    margin: 0 0 14px;
+  }
+  
+  .party-detail-description {
+    color: #55555f;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    margin: 0;
+  }
+  
+  .party-detail-host {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .party-host-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f5f3ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .party-host-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .party-host-avatar span {
+    font-family: "Manrope", sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: #7444ff;
+  }
+  
+  .party-host-info strong {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+  }
+  
+  .party-host-verified {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #7444ff;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+  }
+  
+  .party-host-info small {
+    display: block;
+    color: #9999a3;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  
+  .party-detail-rules {
+    margin: 0;
+    padding-left: 18px;
+    color: #55555f;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  
+  /* BOOKING CARD */
+  .party-detail-booking {
+    position: sticky;
+    top: 90px;
+  }
+  
+  .party-booking-card {
+    background: white;
+    border: 1px solid #e9e9ee;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 12px 35px rgba(23, 23, 29, 0.06);
+  }
+  
+  .party-booking-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .party-booking-price strong {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    color: #17171d;
+  }
+  
+  .party-booking-price span {
+    color: #777780;
+    font-size: 13px;
+    margin-left: 4px;
+  }
+  
+  .party-booking-status {
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  .party-booking-status.available {
+    background: #e5f7ee;
+    color: #168658;
+  }
+  
+  .party-booking-status.sold {
+    background: #fdecec;
+    color: #c43c3c;
+  }
+  
+  .party-booking-divider {
+    height: 1px;
+    background: #eeeeF2;
+    margin: 20px 0;
+  }
+  
+  .party-booking-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .party-quantity {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f7f7f9;
+    border-radius: 11px;
+    padding: 5px;
+    width: fit-content;
+  }
+  
+  .party-quantity button {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid #e4e4e9;
+    font-size: 18px;
+    font-weight: 700;
+    color: #17171d;
+    cursor: pointer;
+  }
+  
+  .party-quantity button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .party-quantity span {
+    min-width: 44px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  
+  .party-booking-field small {
+    display: block;
+    margin-top: 8px;
+    color: #9999a3;
+    font-size: 11px;
+  }
+  
+  .party-booking-summary {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #eeeeF2;
+  }
+  
+  .party-booking-summary > div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: #777780;
+  }
+  
+  .party-booking-total {
+    padding-top: 14px;
+    border-top: 1px solid #eeeeF2;
+  }
+  
+  .party-booking-total span,
+  .party-booking-total strong {
+    color: #17171d !important;
+    font-size: 15px;
+    font-weight: 800;
+  }
+  
+  .party-booking-error {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: #fdecec;
+    color: #c43c3c;
+    border-radius: 9px;
+    font-size: 12px;
+  }
+  
+  .party-booking-button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px;
+    border: none;
+    border-radius: 11px;
+    background: #7444ff;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+  }
+  
+  .party-booking-button:hover:not(:disabled) {
+    background: #6031ed;
+    transform: translateY(-1px);
+  }
+  
+  .party-booking-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  
+  .party-booking-note {
+    text-align: center;
+    color: #9999a3;
+    font-size: 11px;
+    margin: 10px 0 16px;
+  }
+  
+  .party-booking-safe {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    background: #f7f7f9;
+    border-radius: 11px;
+  }
+  
+  .party-booking-safe > span {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  
+  .party-booking-safe strong {
+    font-size: 12px;
+  }
+  
+  .party-booking-safe p {
+    margin: 3px 0 0;
+    color: #888891;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  
+  .party-booking-soldout {
+    text-align: center;
+    padding: 20px 0;
+  }
+  
+  .party-booking-soldout-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  
+  .party-booking-soldout h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+  }
+  
+  .party-booking-soldout p {
+    color: #777780;
+    font-size: 13px;
+    margin: 0 0 16px;
+  }
+  
+  /* SUCCESS TICKET */
+  .party-ticket-success {
+    background: white;
+    border: 1px solid #e9e9ee;
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(23, 23, 29, 0.06);
+  }
+  
+  .party-ticket-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+  }
+  
+  .party-ticket-success h3 {
+    margin: 0 0 6px;
+    font-family: "Manrope", sans-serif;
+    font-size: 22px;
+    letter-spacing: -0.6px;
+  }
+  
+  .party-ticket-success > p {
+    color: #777780;
+    font-size: 13px;
+    margin: 0 0 20px;
+  }
+  
+  .party-ticket-code {
+    background: #f5f3ff;
+    border: 1px dashed #b79cff;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .party-ticket-code small {
+    display: block;
+    color: #6440d9;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  
+  .party-ticket-code strong {
+    font-family: "Manrope", sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: #17171d;
+  }
+  
+  .party-ticket-summary {
+    border-top: 1px solid #eeeeF2;
+    padding-top: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .party-ticket-summary > div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+  }
+  
+  .party-ticket-summary span {
+    color: #777780;
+  }
+  
+  /* LOADING + ERROR */
+  .party-detail-loading,
+  .party-detail-error {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .party-detail-error h2 {
+    font-family: "Manrope", sans-serif;
+    font-size: 26px;
+    letter-spacing: -0.8px;
+    margin: 0;
+  }
+  
+  .party-detail-error p {
+    color: #777780;
+    font-size: 14px;
+    margin: 0 0 8px;
+  }
+  
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .party-detail-hero {
+      grid-template-columns: 1fr;
+    }
+  
+    .party-detail-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .party-detail-booking {
+      position: static;
+    }
+  }
+  
+  @media (max-width: 500px) {
+    .party-detail-page {
+      padding: 24px 0 60px;
+    }
+  
+    .party-detail-container {
+      width: calc(100% - 30px);
+    }
+  
+    .party-detail-section {
+      padding: 20px;
+    }
+  
+    .party-booking-card,
+    .party-ticket-success {
+      padding: 20px;
+    }
+  }
+  /* =========================================================
+   TOP BAR (back + share)
+========================================================= */
+
+.party-detail-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* Override the back link's standalone margin — it lives inside the topbar now */
+.party-detail-topbar .party-detail-back {
+  margin-bottom: 0;
+}
+
+.party-detail-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid #e4e4e9;
+  background: #ffffff;
+  color: #17171d;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+}
+
+.party-detail-share:hover {
+  border-color: #d5ccff;
+  background: #faf9ff;
+  color: #7444ff;
+  transform: translateY(-1px);
+}
+
+.party-detail-share:active {
+  transform: translateY(0);
+}
+
+.party-detail-share-icon {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* Larger in-body share */
+.party-detail-share-large {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 11px;
+  border: 1px dashed #d5ccff;
+  background: #faf9ff;
+  color: #7444ff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.party-detail-share-large:hover {
+  background: #f0ebff;
+  border-color: #b79cff;
+  transform: translateY(-1px);
+}
+
+.party-detail-share-large span {
+  font-size: 15px;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.party-detail-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  padding: 11px 18px;
+  border-radius: 11px;
+  background: #17171d;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+  z-index: 9990;
+  animation: party-toast-in 0.22s ease;
+}
+
+@keyframes party-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .party-detail-toast {
+    animation: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .party-detail-topbar {
+    margin-bottom: 20px;
+  }
+
+  .party-detail-share {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .party-detail-share-large {
+    font-size: 12px;
+    padding: 11px 14px;
+  }
+
+  .party-detail-toast {
+    left: 16px;
+    right: 16px;
+    bottom: 20px;
+    transform: none;
+    text-align: center;
+  }
+
+  .party-detail-toast {
+    animation: party-toast-in-mobile 0.22s ease;
+  }
+
+  @keyframes party-toast-in-mobile {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

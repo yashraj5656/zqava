@@ -1,0 +1,539 @@
+/* =========================================================
+   ZQAVA — TICKET DETAIL
+   ========================================================= */
+
+   .ticket-detail-page {
+    background: #fafaff;
+    min-height: 100vh;
+    padding: 40px 0 100px;
+  }
+  
+  .ticket-detail-container {
+    width: min(900px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+  
+  .ticket-detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #7444ff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 24px;
+  }
+  
+  .ticket-detail-back:hover {
+    color: #6031e8;
+  }
+  
+  /* =========================================================
+     STUB (main ticket card)
+  ========================================================= */
+  
+  .ticket-stub {
+    display: grid;
+    grid-template-columns: 1fr 40px 320px;
+    background: #ffffff;
+    border: 1px solid #eeeef2;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(23, 23, 29, 0.08);
+  }
+  
+  /* =========================================================
+     LEFT COLUMN — cover + info
+  ========================================================= */
+  
+  .ticket-stub-left {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  
+  .ticket-stub-cover {
+    position: relative;
+    height: 220px;
+    background: linear-gradient(135deg, #7444ff 0%, #b79cff 100%);
+    overflow: hidden;
+  }
+  
+  .ticket-stub-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .ticket-stub-cover-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-family: "Manrope", sans-serif;
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: -2px;
+  }
+  
+  /* Status badge on the cover */
+  .ticket-stub-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #168658;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .ticket-stub-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  
+  .ticket-stub-badge.past {
+    color: #9999a3;
+  }
+  
+  .ticket-stub-badge.checked-in {
+    color: #7444ff;
+  }
+  
+  /* Info section */
+  .ticket-stub-info {
+    padding: 24px 28px 28px;
+  }
+  
+  .ticket-stub-label {
+    display: inline-block;
+    color: #9999a3;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  
+  .ticket-stub-info h1 {
+    font-family: "Manrope", sans-serif;
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    font-weight: 800;
+    color: #0d0d12;
+    margin: 0 0 10px;
+    word-break: break-word;
+  }
+  
+  .ticket-stub-venue {
+    color: #696974;
+    font-size: 13px;
+    margin: 0 0 22px;
+  }
+  
+  /* Meta grid */
+  .ticket-stub-meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    padding-top: 18px;
+    border-top: 1px solid #eeeef2;
+  }
+  
+  .ticket-stub-meta small {
+    display: block;
+    color: #9999a3;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+  
+  .ticket-stub-meta strong {
+    display: block;
+    color: #17171d;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  
+  .ticket-stub-host {
+    margin: 18px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid #eeeef2;
+    color: #777780;
+    font-size: 12px;
+  }
+  
+  .ticket-stub-host strong {
+    color: #17171d;
+    font-weight: 700;
+  }
+  
+  /* =========================================================
+     DIVIDER — perforated edge
+  ========================================================= */
+  
+  .ticket-stub-divider {
+    position: relative;
+    width: 40px;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 8px,
+        #eeeef2 8px,
+        #eeeef2 14px
+      );
+    background-size: 1px 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .ticket-stub-notch {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fafaff;
+    border: 1px solid #eeeef2;
+  }
+  
+  .ticket-stub-notch.top {
+    top: -16px;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+  }
+  
+  .ticket-stub-notch.bottom {
+    bottom: -16px;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+  }
+  
+  /* =========================================================
+     RIGHT COLUMN — ticket code
+  ========================================================= */
+  
+  .ticket-stub-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    background: #fbfaff;
+    border-left: 1px dashed #e4dffb;
+    text-align: center;
+    min-width: 0;
+  }
+  
+  .ticket-stub-scan-label {
+    color: #9999a3;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    margin: 0 0 18px;
+  }
+  
+  /* The code box */
+  .ticket-code-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 26px 24px;
+    background: #ffffff;
+    border: 1px solid #eeeef2;
+    border-radius: 16px;
+    box-shadow: 0 6px 22px rgba(23, 23, 29, 0.06);
+    margin-bottom: 14px;
+    width: 100%;
+    max-width: 260px;
+  }
+  
+  .ticket-code-display small {
+    color: #9999a3;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+  }
+  
+  .ticket-code-display strong {
+    font-family: "Manrope", sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #17171d;
+    word-break: break-all;
+    text-align: center;
+    line-height: 1.2;
+  }
+  
+  /* Copy button */
+  .ticket-code-copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 9px;
+    background: #f5f3ff;
+    color: #7444ff;
+    border: 1px solid transparent;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      transform 0.15s ease;
+    margin-bottom: 16px;
+  }
+  
+  .ticket-code-copy:hover {
+    background: #7444ff;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+  
+  .ticket-code-copy:active {
+    transform: translateY(0);
+  }
+  
+  .ticket-code-copy.copied {
+    background: #e5f7ee;
+    color: #168658;
+  }
+  
+  .ticket-code-copy.copied:hover {
+    background: #d4f0e4;
+    color: #168658;
+    transform: none;
+  }
+  
+  .ticket-stub-hint {
+    color: #9999a3;
+    font-size: 11px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 220px;
+  }
+  
+  .ticket-stub-checked {
+    margin-top: 16px;
+    padding: 8px 14px;
+    background: #f0ebff;
+    color: #7444ff;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  
+  /* =========================================================
+     INSTRUCTIONS
+  ========================================================= */
+  
+  .ticket-detail-notes {
+    margin-top: 32px;
+    padding: 26px;
+    background: #ffffff;
+    border: 1px solid #eeeef2;
+    border-radius: 18px;
+  }
+  
+  .ticket-detail-notes h3 {
+    font-family: "Manrope", sans-serif;
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    margin: 0 0 14px;
+    color: #17171d;
+  }
+  
+  .ticket-detail-notes ol {
+    margin: 0;
+    padding-left: 18px;
+    color: #55555f;
+    font-size: 13px;
+    line-height: 1.9;
+  }
+  
+  /* =========================================================
+     LOADING / ERROR
+  ========================================================= */
+  
+  .ticket-detail-loading,
+  .ticket-detail-error {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .ticket-detail-error h2 {
+    font-family: "Manrope", sans-serif;
+    font-size: 24px;
+    letter-spacing: -0.8px;
+    margin: 0;
+    color: #17171d;
+  }
+  
+  .ticket-detail-error p {
+    color: #777780;
+    font-size: 14px;
+    margin: 0 0 8px;
+  }
+  
+  /* =========================================================
+     RESPONSIVE — TABLET (≤800px)
+  ========================================================= */
+  
+  @media (max-width: 800px) {
+    .ticket-stub {
+      grid-template-columns: 1fr;
+    }
+  
+    .ticket-stub-divider {
+      width: 100%;
+      height: 40px;
+      background:
+        repeating-linear-gradient(
+          to right,
+          transparent 0,
+          transparent 8px,
+          #eeeef2 8px,
+          #eeeef2 14px
+        );
+      background-size: 100% 1px;
+      background-position: center;
+    }
+  
+    .ticket-stub-notch.top {
+      top: 50%;
+      left: -16px;
+      transform: translateY(-50%);
+      border-right-color: transparent;
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+    }
+  
+    .ticket-stub-notch.bottom {
+      top: 50%;
+      left: auto;
+      right: -16px;
+      bottom: auto;
+      transform: translateY(-50%);
+      border-left-color: transparent;
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+    }
+  
+    .ticket-stub-right {
+      border-left: none;
+      border-top: 1px dashed #e4dffb;
+      padding: 32px 20px;
+    }
+  
+    .ticket-stub-meta {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    .ticket-code-display strong {
+      font-size: 22px;
+      letter-spacing: 2.5px;
+    }
+  }
+  
+  /* =========================================================
+     RESPONSIVE — MOBILE (≤480px)
+  ========================================================= */
+  
+  @media (max-width: 480px) {
+    .ticket-detail-page {
+      padding: 24px 0 70px;
+    }
+  
+    .ticket-detail-container {
+      width: calc(100% - 30px);
+    }
+  
+    .ticket-stub-cover {
+      height: 170px;
+    }
+  
+    .ticket-stub-info {
+      padding: 20px 20px 22px;
+    }
+  
+    .ticket-stub-right {
+      padding: 24px 18px;
+    }
+  
+    .ticket-stub-meta {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  
+    .ticket-detail-notes {
+      padding: 20px;
+    }
+  
+    .ticket-code-display {
+      padding: 20px 16px;
+      max-width: 100%;
+    }
+  
+    .ticket-code-display strong {
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+  
+    .ticket-code-copy {
+      width: 100%;
+      padding: 12px 18px;
+      font-size: 13px;
+    }
+  }
+  
+  /* =========================================================
+     ACCESSIBILITY
+  ========================================================= */
+  
+  .ticket-detail-container a:focus-visible,
+  .ticket-detail-container button:focus-visible {
+    outline: 3px solid rgba(116, 68, 255, 0.22);
+    outline-offset: 3px;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .ticket-detail-container *,
+    .ticket-detail-container *::before,
+    .ticket-detail-container *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
