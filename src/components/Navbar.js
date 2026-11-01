@@ -707,7 +707,7 @@ function NotificationBell() {
       bookingId
     ) {
       router.push(
-        `/companion-bookings`
+        `/companion/dashboard`
       );
 
       return;
