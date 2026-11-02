@@ -103,7 +103,7 @@ export default function PartiesClient() {
           </p>
 
           <div className="parties-hero-actions">
-            <Link href="/parties/create" className="parties-primary-btn">
+            <Link href="/host" className="parties-primary-btn">
               Host a party <span>→</span>
             </Link>
             <a href="/my-tickets" className="parties-secondary-btn">

@@ -26,7 +26,7 @@ const steps = [
 const initialForm = {
   fullName: "",
   displayName: "",
-  email: "",
+  //email: "",
   phone: "",
   city: "",
   ageConfirmed: false,
@@ -150,11 +150,11 @@ export default function Apply() {
         newErrors.displayName = "Please choose a display name.";
       }
 
-      if (!form.email.trim()) {
+    {/*}  if (!form.email.trim()) {
         newErrors.email = "Please enter your email address.";
       } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
         newErrors.email = "Please enter a valid email address.";
-      }
+      }*/}
 
       if (!form.phone.trim()) {
         newErrors.phone = "Please enter your phone number.";
@@ -258,7 +258,7 @@ export default function Apply() {
   
       formData.append("fullName", form.fullName);
       formData.append("displayName", form.displayName);
-      formData.append("email", form.email);
+    //  formData.append("email", form.email);
       formData.append("phone", form.phone);
       formData.append("city", form.city);
   
@@ -366,12 +366,12 @@ export default function Apply() {
           </div>
 
           <div className="success-actions">
-            <Link href="/companion-profile#weekly-availability" className="apply-btn apply-btn-primary">
-              Complete Profile
+            <Link href="/explore" className="apply-btn apply-btn-primary">
+              Explore Companion
             </Link>
 
-            <Link href="/explore" className="apply-btn apply-btn-secondary">
-              Home
+            <Link href="/parties" className="apply-btn apply-btn-secondary">
+              Explore Parties
             </Link>
           </div>
 
@@ -504,7 +504,7 @@ export default function Apply() {
                     placeholder="What should people call you?"
                   />
 
-                  <Field
+                  {/*<Field
                     label="Email address"
                     type="email"
                     required
@@ -514,7 +514,7 @@ export default function Apply() {
                     }
                     error={errors.email}
                     placeholder="you@example.com"
-                  />
+                  />*/}
 
                   <Field
                     label="Phone number"
@@ -886,10 +886,10 @@ export default function Apply() {
                       label="Display name"
                       value={form.displayName}
                     />
-                    <ReviewItem
+                    {/*<ReviewItem
                       label="Email"
                       value={form.email}
-                    />
+                    />*/}
                     <ReviewItem
                       label="City"
                       value={form.city}

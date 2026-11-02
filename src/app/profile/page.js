@@ -1,5 +1,15 @@
-import Profile from "@/components/Profile";
+import "./Profile.css";
+import ProfileClient from "./ProfileClient";
+
+export const metadata = {
+  title: "My profile — ZQAVA",
+  description: "Manage your account and companion profile.",
+};
 
 export default function ProfilePage() {
-  return <Profile />;
+  return (
+    <main className="companion-profile-page">
+      <ProfileClient />
+    </main>
+  );
 }

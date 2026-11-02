@@ -42,6 +42,36 @@ export default function Navbar() {
     setMenuOpen(false);
   };
 
+  const [moreOpen, setMoreOpen] = useState(false);
+const menuRef = useRef(null);
+
+function closeMore() {
+  setMoreOpen(false);
+}
+
+// Close when clicking outside
+useEffect(() => {
+  if (!moreOpen) return;
+
+  function handleClickOutside(e) {
+    if (menuRef.current && !menuRef.current.contains(e.target)) {
+      setMoreOpen(false);
+    }
+  }
+
+  function handleEscape(e) {
+    if (e.key === "Escape") setMoreOpen(false);
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  document.addEventListener("keydown", handleEscape);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    document.removeEventListener("keydown", handleEscape);
+  };
+}, [moreOpen]);
+
   return (
     <header className="navbar">
       <div className="container nav-inner">
@@ -50,41 +80,71 @@ export default function Navbar() {
           ZQ<span>Q</span>AVA
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="nav-links">
-          <Link href="/explore">Explore</Link>
-          <Link href="/parties">Parties</Link>
-          <Link href="/host">Host Dashboard</Link>
-          <Link href="/companion/dashboard">Companion Dashboard</Link>
-          <Link href="/bookings">My companion</Link>
-          {/*<Link href="/companion-bookings">Bookings</Link>
-          <Link href="/companion-earnings">Earnings</Link>*/}
-          {!loading && user && (
-            accountType === "companion" ? (
-              <Link href="/creator/dashboard">
-                Affiliate
-              </Link>
-            ) : (
-              <Link href="/creator/dashboard">
-                Affiliate
-              </Link>
-            )
-          )}
-          {!loading && user && (
-            accountType === "companion" ? (
-              <Link href="/companion-profile">
-                Account
-              </Link>
-            ) : (
-              <Link href="/profile">
-                Account
-              </Link>
-            )
-          )}
+{/* Desktop Navigation */}
+<nav className="nav-links">
+  <Link href="/explore">Explore</Link>
+  <Link href="/parties">Parties</Link>
+  <Link href="/my-tickets">My Tickets</Link>
+  <Link href="/bookings">My Bookings</Link>
 
-         
+  {/* MORE MENU */}
+  <div className="nav-more" ref={menuRef}>
+    <button
+      type="button"
+      className={`nav-more-trigger ${moreOpen ? "open" : ""}`}
+      onClick={() => setMoreOpen((v) => !v)}
+      aria-haspopup="true"
+      aria-expanded={moreOpen}
+    >
+      Menu
+      <span className="nav-more-chevron" aria-hidden="true">
+        ▾
+      </span>
+    </button>
 
-        </nav>
+    {moreOpen && (
+      <div className="nav-more-dropdown" role="menu">
+        {/* DISCOVER */}
+        <div className="nav-more-section">
+          <span className="nav-more-label">Discover</span>
+          <Link href="/" onClick={closeMore}>Home</Link>
+          <Link href="/explore" onClick={closeMore}>Explore Companions</Link>
+          <Link href="/parties" onClick={closeMore}>Explore Parties</Link>
+        </div>
+
+        {/* MY PURCHASES */}
+        <div className="nav-more-section">
+          <span className="nav-more-label">My Purchases</span>
+          <Link href="/bookings" onClick={closeMore}>My Bookings</Link>
+          <Link href="/my-tickets" onClick={closeMore}>My Tickets</Link>
+        </div>
+
+        {/* DASHBOARDS */}
+        <div className="nav-more-section">
+          <span className="nav-more-label">Dashboards</span>
+          <Link href="/companion/dashboard" onClick={closeMore}>Companion Dashboard</Link>
+          <Link href="/host" onClick={closeMore}>Host Dashboard</Link>
+          <Link href="/creator/dashboard" onClick={closeMore}>Affiliate Dashboard</Link>
+        </div>
+
+        {/* GET STARTED */}
+        <div className="nav-more-section">
+          <span className="nav-more-label">Get Started</span>
+          <Link href="/become-a-companion" onClick={closeMore}>Become a Companion</Link>
+          <Link href="/earn" onClick={closeMore}>How You Earn</Link>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {!loading && user && (
+    accountType === "companion" ? (
+      <Link href="/companion-profile">Account</Link>
+    ) : (
+      <Link href="/profile">Account</Link>
+    )
+  )}
+</nav>
 
         {/* Desktop Actions */}
         <div className="nav-actions">
@@ -144,42 +204,32 @@ export default function Navbar() {
           </Link>
         )
       )}
-      <Link href="/" onClick={closeMenu}>
-        Home
-      </Link>
+<nav className="nav-section">
+  <span className="nav-section-label">Discover</span>
+  <Link href="/explore" onClick={closeMenu}>Explore Companions</Link>
+  <Link href="/parties" onClick={closeMenu}>Explore Parties</Link>
+</nav>
 
-      <Link href="/explore" onClick={closeMenu}>
-        Explore
-      </Link>
+<nav className="nav-section">
+  <span className="nav-section-label">My Purchases</span>
+  <Link href="/bookings" onClick={closeMenu}>My Bookings</Link>
+  <Link href="/my-tickets" onClick={closeMenu}>My Tickets</Link>
+</nav>
 
-      <Link href="/parties" onClick={closeMenu}>Parties</Link>
-      <Link href="/my-tickets" onClick={closeMenu}>My Tickets</Link>
-      <Link href="/host" onClick={closeMenu}>Host Dashboard</Link>
-      <Link href="/companion/dashboard" onClick={closeMenu}>Companion Dashboard</Link>
-      <Link href="/companion/checkin" onClick={closeMenu}>Check in</Link>
-      <Link href="/bookings" onClick={closeMenu}>My Companion</Link>
-      <Link href="/become-a-companion" onClick={closeMenu}>Become Companion</Link>
-      <Link href="/earn" onClick={closeMenu}>
-        How you earn
-      </Link>
+<nav className="nav-section">
+  <span className="nav-section-label">Dashboards</span>
+  <Link href="/companion/dashboard" onClick={closeMenu}>Companion</Link>
+  <Link href="/host" onClick={closeMenu}>Event Host</Link>
+  <Link href="/creator/dashboard" onClick={closeMenu}>Affiliate</Link>
+</nav>
 
-     {/* <Link href="/safety" onClick={closeMenu}>
-        Safety
-      </Link>*/}
+<nav className="nav-section">
+  <span className="nav-section-label">Get Started</span>
+  <Link href="/become-a-companion" onClick={closeMenu}>Become a Companion</Link>
+  <Link href="/earn" onClick={closeMenu}>How You Earn</Link>
+</nav>
 
-
-      {!loading && user && (
-            accountType === "companion" ? (
-              <Link href="/creator/dashboard" onClick={closeMenu}>
-                Affiliate
-              </Link>
-            ) : (
-              <Link href="/creator/dashboard" onClick={closeMenu}>
-                Affiliate
-              </Link>
-            )
-          )}
-    </div>
+</div>
 
     {/* Mobile Actions */}
     <div className="zqava-mobile-actions">

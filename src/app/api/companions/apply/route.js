@@ -1,20 +1,74 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
+import { jwtVerify } from "jose";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import cloudinary from "@/lib/cloudinary";
 
+export const runtime = "nodejs";
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+/* =========================================================
+   AUTH — read userId from session cookie
+========================================================= */
+
+async function getAuthenticatedUserId() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("zqava_session")?.value;
+
+  if (!token || !JWT_SECRET) return null;
+
+  try {
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(JWT_SECRET)
+    );
+    return payload.userId || payload.id || null;
+  } catch {
+    return null;
+  }
+}
+
+/* =========================================================
+   POST — submit companion application
+========================================================= */
+
 export async function POST(request) {
   try {
     await connectDB();
 
+    /* ---------- AUTH ---------- */
+    const userId = await getAuthenticatedUserId();
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          message: "Please log in to become a companion.",
+        },
+        { status: 401 }
+      );
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          message: "User not found. Please log in again.",
+        },
+        { status: 404 }
+      );
+    }
+
+    /* ---------- FORM DATA ---------- */
     const formData = await request.formData();
 
     const fullName = formData.get("fullName")?.toString().trim();
     const displayName = formData.get("displayName")?.toString().trim();
-    const email = formData.get("email")?.toString().trim().toLowerCase();
     const phone = formData.get("phone")?.toString().trim();
     const city = formData.get("city")?.toString().trim();
     const bio = formData.get("bio")?.toString().trim();
@@ -25,14 +79,12 @@ export async function POST(request) {
     const interestsRaw =
       formData.get("interests")?.toString() || "";
 
-  //  const availabilityRaw =
-  //    formData.get("availability")?.toString() || "";
-
     const rate = Number(formData.get("rate") || 0);
 
     const photo = formData.get("photo");
 
-    if (!fullName || !displayName || !email || !phone || !city) {
+    /* ---------- VALIDATION (email removed) ---------- */
+    if (!fullName || !displayName || !phone || !city) {
       return NextResponse.json(
         {
           message: "Please complete all required personal details.",
@@ -59,44 +111,44 @@ export async function POST(request) {
       );
     }
 
+    /* ---------- PARSE ARRAYS ---------- */
     const companionshipStyles = companionshipRaw
       ? JSON.parse(companionshipRaw)
       : [];
-
-      const availabilityRaw =
-      formData.get("availability")?.toString().trim() || "";
-    
-    const availability = {
-      timezone: "Asia/Kolkata",
-      weeklySchedule: [],
-    };
 
     const interests = interestsRaw
       .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
 
-    // --------------------------------
-    // Upload profile photo
-    // --------------------------------
+    /* ---------- DEFAULT AVAILABILITY ---------- */
+    const availability = {
+      timezone: "Asia/Kolkata",
+      weeklySchedule: [
+        { day: "monday",    enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+        { day: "tuesday",   enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+        { day: "wednesday", enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+        { day: "thursday",  enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+        { day: "friday",    enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+        { day: "saturday",  enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+        { day: "sunday",    enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+      ],
+    };
 
+    /* ---------- PHOTO UPLOAD ---------- */
     let profilePhoto = "";
 
     if (photo && typeof photo !== "string" && photo.size > 0) {
       if (!photo.type.startsWith("image/")) {
         return NextResponse.json(
-          {
-            message: "Profile photo must be an image.",
-          },
+          { message: "Profile photo must be an image." },
           { status: 400 }
         );
       }
 
       if (photo.size > 5 * 1024 * 1024) {
         return NextResponse.json(
-          {
-            message: "Profile photo must be smaller than 5MB.",
-          },
+          { message: "Profile photo must be smaller than 5MB." },
           { status: 400 }
         );
       }
@@ -109,13 +161,20 @@ export async function POST(request) {
           {
             folder: "zqava/companions",
             resource_type: "image",
+            transformation: [
+              {
+                width: 800,
+                height: 800,
+                crop: "fill",
+                gravity: "face",
+                quality: "auto",
+                fetch_format: "auto",
+              },
+            ],
           },
           (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
+            if (error) reject(error);
+            else resolve(result);
           }
         );
 
@@ -125,94 +184,43 @@ export async function POST(request) {
       profilePhoto = uploadedImage.secure_url;
     }
 
-    // --------------------------------
-    // Split full name
-    // --------------------------------
-
+    /* ---------- SPLIT NAME ---------- */
     const nameParts = fullName.split(/\s+/);
-
     const firstName = nameParts.shift() || "";
     const lastName = nameParts.join(" ");
 
-    // --------------------------------
-    // Find existing user
-    // --------------------------------
+    /* ---------- UPDATE THE LOGGED-IN USER ---------- */
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.city = city;
+    user.role = "companion";
 
-    let user = await User.findOne({ email });
+    const existingProfile =
+      user.companionProfile?.toObject?.() || user.companionProfile || {};
 
-    if (user) {
-      user.firstName = firstName;
-      user.lastName = lastName;
-      user.city = city;
-      user.role = "companion";
+    user.companionProfile = {
+      ...existingProfile,
+      displayName,
+      city,
+      bio,
+      phone,
+      hourlyRate: rate,
+      interests,
+      companionshipStyles,
+      availability:
+        existingProfile.availability?.weeklySchedule?.length > 0
+          ? existingProfile.availability
+          : availability,
+      profilePhoto: profilePhoto || existingProfile.profilePhoto || "",
+      available: true,
+      profileCompleted: true,
+      applicationStatus: "approved",
+      verified: existingProfile.verified || false,
+    };
 
-      user.companionProfile = {
-        ...(user.companionProfile?.toObject?.() ||
-          user.companionProfile ||
-          {}),
+    await user.save();
 
-        displayName,
-        city,
-        bio,
-        phone,
-        hourlyRate: rate,
-        interests,
-        companionshipStyles,
-        availability,
-        profilePhoto:
-          profilePhoto ||
-          user.companionProfile?.profilePhoto ||
-          "",
-
-        available: true,
-
-        profileCompleted: true,
-
-        applicationStatus: "approved",
-
-        verified:
-          user.companionProfile?.verified || false,
-      };
-
-      await user.save();
-    } else {
-      // --------------------------------
-      // Create new companion account
-      // --------------------------------
-
-      const temporaryPassword = crypto.randomBytes(32).toString("hex");
-
-      const hashedPassword = await bcrypt.hash(
-        temporaryPassword,
-        12
-      );
-
-      user = await User.create({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        role: "companion",
-        city,
-
-        companionProfile: {
-          displayName,
-          city,
-          bio,
-          phone,
-          hourlyRate: rate,
-          interests,
-          companionshipStyles,
-          availability,
-          profilePhoto,
-          available: true,
-          profileCompleted: true,
-          applicationStatus: "approved",
-          verified: false,
-        },
-      });
-    }
-
+    /* ---------- RESPONSE ---------- */
     return NextResponse.json(
       {
         success: true,
@@ -221,15 +229,14 @@ export async function POST(request) {
           id: user._id.toString(),
           name: displayName,
           city,
-          profilePhoto:
-            user.companionProfile?.profilePhoto || profilePhoto,
+          profilePhoto: user.companionProfile?.profilePhoto || profilePhoto,
         },
       },
       { status: 201 }
     );
   } catch (error) {
     console.error("COMPANION APPLICATION ERROR:", error);
-  
+
     return NextResponse.json(
       {
         message:

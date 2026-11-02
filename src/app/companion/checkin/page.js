@@ -184,7 +184,7 @@ function CheckinContent() {
               </button>*/}
 
               <div className="companion-checkin-divider">
-                <span>or enter ticket code</span>
+                <span>Enter the ticket code</span>
               </div>
             </>
           ) : (

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import ExploreClient from "./ExploreClient";
 
 export const metadata = {
-  title: "Explore — ZQAVA",
+  title: "ZQAVA — Meet. Connect. Experience.",
   description:
     "Discover companions and parties near you. Find people who match your plans.",
 };

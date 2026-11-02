@@ -1387,3 +1387,69 @@
     }
   
   }
+  /* =========================================================
+   APPLICATION — CTA CARD
+========================================================= */
+
+.application-cta-card {
+  padding: 36px 30px;
+  border: 1px solid #e7e7e9;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(23, 23, 29, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.application-cta-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #f1edff;
+  font-size: 22px;
+  margin-bottom: 18px;
+}
+
+.application-cta-card h3 {
+  margin: 0 0 10px;
+  font-family: "Manrope", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #17171d;
+  line-height: 1.2;
+}
+
+.application-cta-card > p {
+  margin: 0 0 24px;
+  color: #696974;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.application-cta-card .application-button {
+  width: 100%;
+  justify-content: center;
+}
+
+.application-cta-card .form-disclaimer {
+  margin: 16px 0 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .application-cta-card {
+    padding: 28px 22px;
+  }
+
+  .application-cta-card h3 {
+    font-size: 20px;
+  }
+}

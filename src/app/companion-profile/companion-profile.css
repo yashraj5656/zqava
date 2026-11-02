@@ -2839,3 +2839,52 @@
      }
    }
    
+   /* Profile save error */
+.profile-save-error {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fdecec;
+  border: 1px solid #f8cdcd;
+  color: #c43c3c;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Reset availability button */
+.availability-reset-btn {
+  min-height: 43px;
+  padding: 0 16px;
+  border: 1px solid var(--cp-border);
+  border-radius: 11px;
+  background: white;
+  color: var(--cp-muted);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 180ms ease, color 180ms ease;
+}
+
+.availability-reset-btn:hover:not(:disabled) {
+  border-color: var(--cp-purple);
+  color: var(--cp-purple);
+}
+
+.availability-reset-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile: save row stacks */
+@media (max-width: 700px) {
+  .companion-profile-save-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-save-error {
+    width: 100%;
+  }
+}

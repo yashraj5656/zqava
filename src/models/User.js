@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 
-/*
-|--------------------------------------------------------------------------
-| TIME SLOT
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   TIME SLOT
+========================================================= */
 
 const TimeSlotSchema = new mongoose.Schema(
   {
@@ -23,11 +21,9 @@ const TimeSlotSchema = new mongoose.Schema(
   }
 );
 
-/*
-|--------------------------------------------------------------------------
-| WEEKLY DAY
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   WEEKLY DAY
+========================================================= */
 
 const WeeklyDaySchema = new mongoose.Schema(
   {
@@ -47,7 +43,7 @@ const WeeklyDaySchema = new mongoose.Schema(
 
     enabled: {
       type: Boolean,
-      default: false,
+      default: true,          // ← changed from false
     },
 
     slots: {
@@ -60,144 +56,134 @@ const WeeklyDaySchema = new mongoose.Schema(
   }
 );
 
-/*
-|--------------------------------------------------------------------------
-| COMPANION AVAILABILITY
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   DEFAULT WEEKLY SCHEDULE
+========================================================= */
 
-const CompanionAvailabilitySchema =
-  new mongoose.Schema(
-    {
-      timezone: {
-        type: String,
-        default: "Asia/Kolkata",
-      },
+const defaultWeeklySchedule = () => [
+  { day: "monday",    enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+  { day: "tuesday",   enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+  { day: "wednesday", enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+  { day: "thursday",  enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+  { day: "friday",    enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+  { day: "saturday",  enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+  { day: "sunday",    enabled: true, slots: [{ start: "10:00", end: "18:00" }] },
+];
 
-      weeklySchedule: {
-        type: [WeeklyDaySchema],
-        default: [],
-      },
+/* =========================================================
+   COMPANION AVAILABILITY
+========================================================= */
+
+const CompanionAvailabilitySchema = new mongoose.Schema(
+  {
+    timezone: {
+      type: String,
+      default: "Asia/Kolkata",
     },
-    {
-      _id: false,
-    }
-  );
 
-/*
-|--------------------------------------------------------------------------
-| COMPANION PROFILE
-|--------------------------------------------------------------------------
-*/
-
-const CompanionProfileSchema =
-  new mongoose.Schema(
-    {
-      displayName: {
-        type: String,
-        default: "",
-      },
-
-      city: {
-        type: String,
-        default: "",
-      },
-
-      age: {
-        type: Number,
-        default: null,
-      },
-
-      bio: {
-        type: String,
-        default: "",
-      },
-
-      hourlyRate: {
-        type: Number,
-        default: 0,
-      },
-
-      available: {
-        type: Boolean,
-        default: true,
-      },
-
-      interests: {
-        type: [String],
-        default: [],
-      },
-
-      companionshipStyles: {
-        type: [String],
-        default: [],
-      },
-
-      /*
-       * --------------------------------------------------------
-       * AVAILABILITY
-       * --------------------------------------------------------
-       *
-       * IMPORTANT:
-       *
-       * This is an OBJECT, NOT an array.
-       *
-       * availability: {
-       *   timezone: "...",
-       *   weeklySchedule: [...]
-       * }
-       *
-       */
-
-      availability: {
-        type: CompanionAvailabilitySchema,
-
-        default: () => ({
-          timezone: "Asia/Kolkata",
-          weeklySchedule: [],
-        }),
-      },
-
-      profilePhoto: {
-        type: String,
-        default: "",
-      },
-
-      phone: {
-        type: String,
-        default: "",
-      },
-
-      verified: {
-        type: Boolean,
-        default: false,
-      },
-
-      profileCompleted: {
-        type: Boolean,
-        default: false,
-      },
-
-      applicationStatus: {
-        type: String,
-        enum: [
-          "pending",
-          "approved",
-          "rejected",
-        ],
-        default: "pending",
-      },
+    weeklySchedule: {
+      type: [WeeklyDaySchema],
+      default: defaultWeeklySchedule,   // ← changed from []
     },
-    {
-      _id: false,
-    }
-  );
+  },
+  {
+    _id: false,
+  }
+);
 
-/*
-|--------------------------------------------------------------------------
-| USER
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   COMPANION PROFILE
+========================================================= */
+
+const CompanionProfileSchema = new mongoose.Schema(
+  {
+    displayName: {
+      type: String,
+      default: "",
+    },
+
+    city: {
+      type: String,
+      default: "",
+    },
+
+    age: {
+      type: Number,
+      default: null,
+    },
+
+    bio: {
+      type: String,
+      default: "",
+    },
+
+    hourlyRate: {
+      type: Number,
+      default: 0,
+    },
+
+    available: {
+      type: Boolean,
+      default: true,
+    },
+
+    interests: {
+      type: [String],
+      default: [],
+    },
+
+    companionshipStyles: {
+      type: [String],
+      default: [],
+    },
+
+    /* ----------------------------------------------------
+       AVAILABILITY (object, not array)
+       ---------------------------------------------------- */
+
+    availability: {
+      type: CompanionAvailabilitySchema,
+
+      default: () => ({
+        timezone: "Asia/Kolkata",
+        weeklySchedule: defaultWeeklySchedule(),   // ← real defaults
+      }),
+    },
+
+    profilePhoto: {
+      type: String,
+      default: "",
+    },
+
+    phone: {
+      type: String,
+      default: "",
+    },
+
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+
+    profileCompleted: {
+      type: Boolean,
+      default: false,
+    },
+
+    applicationStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+  },
+  {
+    _id: false,
+  }
+);
+
+/* =========================================================
+   USER
+========================================================= */
 
 const UserSchema = new mongoose.Schema(
   {
@@ -226,11 +212,7 @@ const UserSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: [
-        "user",
-        "companion",
-        "admin",
-      ],
+      enum: ["user", "companion", "admin"],
       default: "user",
     },
 
@@ -264,17 +246,11 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-/*
-|--------------------------------------------------------------------------
-| MODEL
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   MODEL
+========================================================= */
 
 const User =
-  mongoose.models.User ||
-  mongoose.model(
-    "User",
-    UserSchema
-  );
+  mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;

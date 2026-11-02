@@ -686,7 +686,7 @@ export default function ExploreClient()  {
   
               {mode === "parties" && (
                 <Link
-                  href="/parties/create"
+                  href="/host"
                   className="explore-host-cta"
                 >
                   + Host a party
@@ -1015,7 +1015,7 @@ export default function ExploreClient()  {
                 href={
                   mode === "companions"
                     ? "/become-a-companion"
-                    : "/parties/create"
+                    : "/host"
                 }
                 className="final-cta-button"
               >

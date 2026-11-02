@@ -16,7 +16,7 @@ const inter = Inter({
 export const metadata = {
   title: {
     default: "ZQAVA — Meet. Connect. Experience.",
-    template: "%s | ZQAVA",
+    template: "%s ",
   },
   description:
     "ZQAVA is a platform to discover and book verified companions for conversations, activities, events, and experiences.",

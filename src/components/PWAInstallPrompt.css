@@ -148,4 +148,9 @@
       padding: 0 10px;
     }
   }
-  
+  /* Hide install prompt on desktop */
+@media (min-width: 901px) {
+  .zqava-install-prompt {
+    display: none !important;
+  }
+}
